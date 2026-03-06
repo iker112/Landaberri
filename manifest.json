@@ -1,17 +1,20 @@
 {
   "name": "Landaberri Jantokia",
   "short_name": "Jantokia",
-  "description": "App de gestión del comedor Landaberri",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#047857",
   "icons": [
     {
-      "src": "logo-app.png",
+      "src": "landaberri.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "landaberri.jpg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/jpeg"
     }
   ]
 }

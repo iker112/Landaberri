@@ -389,23 +389,22 @@
       }
     };
 
-   async function initializeApp() {
-      console.log("Iniciando app en GitHub...");
+  async function initializeApp() {
+      console.log("Iniciando app...");
       try {
-        // 1. Iniciamos el SDK que hemos creado arriba
-        await element_sdk.init();
+        // Inicializamos nuestro SDK local
+        if (window.element_sdk) {
+            await element_sdk.init();
+        }
         
-        // 2. Cargamos los estudiantes del LocalStorage
+        // Cargamos los datos
         await loadStudents();
         
-        // 3. QUITAMOS LA PANTALLA DE CARGA Y MOSTRAMOS LOGIN
+        // FORZAMOS OCULTAR EL CARGANDO
         document.getElementById('loading-screen').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
-        
-        console.log("¡Desbloqueado!");
-      } catch (e) {
-        console.error("Error al iniciar:", e);
-        // Si hay error, quitamos la pantalla de carga igual
+      } catch (error) {
+        console.error('Error al iniciar:', error);
         document.getElementById('loading-screen').classList.add('hidden');
       }
     }
@@ -1266,6 +1265,7 @@
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9988e59272cc4a',t:'MTc3MzA1MzU5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
 

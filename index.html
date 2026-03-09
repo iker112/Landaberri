@@ -389,44 +389,23 @@
       }
     };
 
-    async function initApp() {
-      // Init Element SDK
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (config) => {
-            document.getElementById('school-title').textContent = config.school_name || defaultConfig.school_name;
-          },
-          mapToCapabilities: (config) => ({
-            recolorables: [
-              { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
-              { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => window.elementSdk.setConfig({ accent_color: v }) },
-              { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
-              { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
-              { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => window.elementSdk.setConfig({ secondary_color: v }) }
-            ],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (config) => new Map([
-            ['school_name', config.school_name || defaultConfig.school_name],
-            ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
-          ])
-        });
+    async function initializeApp() {
+      try {
+        // Forzamos la inicialización aunque no estemos en Canva
+        await element_sdk.init();
+        console.log("SDK Inicializado");
+        
+        // Cargamos los datos iniciales
+        await loadStudents();
+        
+        // Ocultamos la pantalla de carga y mostramos el login
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+      } catch (error) {
+        console.error('Error inicializando:', error);
+        // Si hay error, también ocultamos el cargando para ver qué pasa
+        document.getElementById('loading-screen').classList.add('hidden');
       }
-
-      // Init Data SDK
-      if (window.dataSdk) {
-        const result = await window.dataSdk.init(dataHandler);
-        if (!result.isOk) {
-          console.error('Failed to initialize Data SDK');
-        }
-      }
-
-      // Set today's date
-      document.getElementById('meal-date').value = new Date().toISOString().split('T')[0];
-      updateCurrentWeekDisplay();
     }
 
     initApp();
@@ -1285,5 +1264,6 @@
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9988e59272cc4a',t:'MTc3MzA1MzU5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 

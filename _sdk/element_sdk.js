@@ -1,12 +1,11 @@
-// Definimos el objeto con el nombre exacto que busca el index.html
-window.element_sdk = {
+// Forzamos ambos nombres para que no haya errores
+const sdkLogic = {
     init: function() {
-        console.log("SDK de Elementos inicializado localmente");
-        // Forzamos que la pantalla de carga se oculte si el index no lo hace
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) {
-            loadingScreen.classList.add('hidden');
-        }
+        console.log("SDK Local activado");
+        // Quitamos la pantalla de carga por la fuerza
+        const loader = document.getElementById('loading-screen');
+        if (loader) loader.classList.add('hidden');
+        
         return Promise.resolve();
     },
     refresh: function() {
@@ -14,5 +13,5 @@ window.element_sdk = {
     }
 };
 
-// Compatibilidad por si acaso
-window.elementSdk = window.element_sdk;
+window.element_sdk = sdkLogic;
+window.elementSdk = sdkLogic;

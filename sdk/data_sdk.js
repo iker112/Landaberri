@@ -25,3 +25,6 @@ window.data_sdk = {
         return items[index];
     }
 };
+
+// Esta es la forma correcta de crear el alias para evitar errores:
+window.dataSdk = window.data_sdk;

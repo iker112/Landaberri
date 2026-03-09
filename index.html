@@ -792,20 +792,15 @@
       document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
     }
 
-  async function addStudent(e) {
+ async function addStudent(e) {
   e.preventDefault();
-  
-  const form = document.getElementById('add-student-form');
-  const isEditing = form.dataset.editing === 'true';
-  const studentId = form.dataset.studentId;
   const btn = e.target.querySelector('button[type="submit"]');
-  
   btn.disabled = true;
-  btn.innerHTML = `<span>${t('Gorde...', 'Guardando...')}</span>`;
-  
+
   try {
     const studentData = {
       type: 'student',
+      student_id: 'STU-' + Date.now(),
       student_name: document.getElementById('new-student-name').value.trim(),
       student_surname: document.getElementById('new-student-surname').value.trim(),
       class_level: document.getElementById('new-student-class').value,
@@ -814,69 +809,24 @@
       created_at: new Date().toISOString()
     };
 
-    let result;
-    if (isEditing) {
-      const existing = allData.find(d => d.student_id === studentId);
-      // Usamos el ID de LocalStorage y el objeto corregido window.data_sdk
-      result = await window.data_sdk.update('students', existing.id, studentData);
-    } else {
-      studentData.student_id = 'STU-' + Date.now();
-      result = await window.data_sdk.create('students', studentData);
-    }
+    // Llamamos al SDK
+    const result = await window.data_sdk.create('students', studentData);
 
-    if (result) {
-      showToast(t('Ikaslea ondo gorde da', 'Estudiante guardado correctamente'));
+    // Si 'result' tiene algo, es que ha funcionado
+    if (result && result.id) {
+      showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
       hideAddStudentForm();
-      await loadStudents(); // Refresca la lista en pantalla
+      await loadStudents(); // Refrescamos la lista
+    } else {
+      throw new Error("Error al guardar");
     }
   } catch (error) {
-    console.error("Error:", error);
-    showToast(t('Errorea gordean', 'Error al guardar'));
+    console.error(error);
+    showToast(t('Errorea ikaslea gehitzean', 'Error al añadir estudiante'));
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<span>${t('Gorde', 'Guardar')}</span>`;
   }
 }
-    function confirmDeleteStudent(studentId) {
-      if (!currentUser || !currentUser.isAdmin) {
-        showToast(t('Soilik administratzaileak ikasle berriak sortu dezakete', 'Solo los administradores pueden eliminar estudiantes'));
-        return;
-      }
-      
-      const student = students.find(s => s.student_id === studentId);
-      
-      if (!student) {
-        showToast(t('Errorea: ikaslea ez da aurkitu', 'Error: estudiante no encontrado'));
-        return;
-      }
-      
-      const btn = document.getElementById(`delete-btn-${studentId}`);
-      const originalHTML = btn.innerHTML;
-      
-      btn.innerHTML = `
-        <div class="flex gap-1">
-          <button type="button" class="px-2 py-1 bg-red-600 text-white rounded text-xs font-semibold hover:bg-red-700 confirm-yes" data-student-id="${studentId}">
-            ${t('Bai', 'Sí')}
-          </button>
-          <button type="button" class="px-2 py-1 bg-gray-400 text-white rounded text-xs font-semibold hover:bg-gray-500 confirm-no">
-            ${t('Ez', 'No')}
-          </button>
-        </div>
-      `;
-      
-      btn.querySelector('.confirm-yes').addEventListener('click', async function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        await deleteStudent(studentId);
-      });
-      
-      btn.querySelector('.confirm-no').addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        btn.innerHTML = originalHTML;
-      });
-    }
-
     async function deleteStudent(studentId) {
       const fullRecord = allData.find(d => d.student_id === studentId && d.type === 'student');
       
@@ -1240,6 +1190,7 @@
   </script>
 </body>
 </html>
+
 
 
 

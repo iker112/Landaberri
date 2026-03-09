@@ -38,4 +38,4 @@ const data_sdk = {
     }
 };
 
-window.data_sdk = data_sdk;
+window.dataSdk = data_sdk;

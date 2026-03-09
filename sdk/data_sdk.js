@@ -4,7 +4,7 @@ window.data_sdk = {
         const newItem = { ...data, id: Date.now().toString() };
         items.push(newItem);
         localStorage.setItem(table, JSON.stringify(items));
-        return newItem;
+        return newItem; // Devolvemos el objeto, no un .isOk
     },
     list: async function(table, query = {}) {
         let items = JSON.parse(localStorage.getItem(table) || "[]");
@@ -25,6 +25,5 @@ window.data_sdk = {
         return items[index];
     }
 };
-
-// Esta es la forma correcta de crear el alias para evitar errores:
+// Creamos el alias para que ambos funcionen
 window.dataSdk = window.data_sdk;

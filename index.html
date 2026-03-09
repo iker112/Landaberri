@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-title" content="Landaberri Jantokia">
   <meta name="theme-color" content="#047857">
   <meta name="description" content="Landaberri Ikastolaren jantoki kudeatzailea">
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]%7D">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23047857'/%3E%3Cpath d='M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23DC2626'/%3E%3Cpath d='M45 48 L50 55 L60 42' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>Landaberri Jantokia</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -106,7 +106,7 @@
     <div id="family-dashboard" class="hidden fade-in">
      <div class="mb-6">
       <h2 id="family-student-name" class="text-2xl font-bold text-gray-800"></h2>
-    <p class="text-gray-500" data-eu="Asteko jantoki informazioa" data-es="Información semanal del comedor">Asteko jantoki informazioa</p>
+      <p class="text-gray-500" data-eu="Asteko jantoki informazioa" data-es="Información semanal del comedor">Asteko jantoki informazioa</p>
      </div><!-- Week Navigation -->
      <div class="flex items-center justify-between mb-6 bg-white rounded-xl p-4 shadow">
       <button onclick="changeWeek(-1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
@@ -160,11 +160,13 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
          <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila" data-es="Email de la familia">Familiaren emaila</label> <input type="email" id="new-student-email" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila (1)" data-es="Email de la familia (1)">Familiaren emaila (1)</label> <input type="email" id="new-student-email" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
          </div>
          <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Pasahitza" data-es="Contraseña">Pasahitza</label> <input type="text" id="new-student-password" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
          </div>
+        </div>
+        <div><label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila (2) - aukerazkoa" data-es="Email de la familia (2) - opcional">Familiaren emaila (2) - aukerazkoa</label> <input type="email" id="new-student-email-2" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
         </div>
         <div class="flex gap-2 justify-end">
          <button type="button" onclick="hideAddStudentForm()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Utzi" data-es="Cancelar">Utzi</span> </button> <button type="submit" class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"> <span data-eu="Gorde" data-es="Guardar">Gorde</span> </button>
@@ -485,7 +487,9 @@
       }
       
       const student = students.find(s => 
-        s.family_email && s.family_email.toLowerCase() === email && s.password === password
+        (s.family_email && s.family_email.toLowerCase() === email ||
+         s.family_email_2 && s.family_email_2.toLowerCase() === email) && 
+        s.password === password
       );
       
       if (student) {
@@ -512,6 +516,10 @@
         document.getElementById('admin-menu').classList.add('hidden');
         showScreen('monitor-dashboard');
         renderStudentsByClass();
+        // Show students panel and hide meals panel for non-admin monitors
+        document.getElementById('students-panel').classList.remove('hidden');
+        document.getElementById('meals-panel').classList.add('hidden');
+        document.getElementById('meals-panel-monitor').classList.add('hidden');
         document.getElementById('monitor-login-error').classList.add('hidden');
       } else {
         const errorEl = document.getElementById('monitor-login-error');
@@ -769,6 +777,7 @@
       document.getElementById('new-student-surname').value = '';
       document.getElementById('new-student-class').value = '';
       document.getElementById('new-student-email').value = '';
+      document.getElementById('new-student-email-2').value = '';
       document.getElementById('new-student-password').value = '';
       
       document.querySelector('#add-student-form h3').textContent = t('Ikasle berria', 'Nuevo estudiante');
@@ -789,6 +798,7 @@
       document.getElementById('new-student-surname').value = student.student_surname || '';
       document.getElementById('new-student-class').value = student.class_level || '';
       document.getElementById('new-student-email').value = student.family_email || '';
+      document.getElementById('new-student-email-2').value = student.family_email_2 || '';
       document.getElementById('new-student-password').value = student.password || '';
       
       const form = document.getElementById('add-student-form');
@@ -822,6 +832,7 @@
             student_surname: document.getElementById('new-student-surname').value.trim(),
             class_level: document.getElementById('new-student-class').value,
             family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
+            family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || null,
             password: document.getElementById('new-student-password').value
           };
           
@@ -852,6 +863,7 @@
           student_surname: document.getElementById('new-student-surname').value.trim(),
           class_level: document.getElementById('new-student-class').value,
           family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
+          family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || null,
           password: document.getElementById('new-student-password').value,
           created_at: new Date().toISOString()
         };
@@ -951,15 +963,15 @@
       
       const existingMeal = meals.find(m => m.student_id === selectedStudentForMeals.student_id && m.date === date);
       
+      // Load meal content from admin-saved meals
+      const adminMeal = meals.find(m => !m.student_id && m.date === date);
+      
+      document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
+      document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
+      document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
+      
       if (existingMeal) {
         editingMealId = existingMeal.__backendId;
-        
-        // Load meal content from admin-saved meals
-        const adminMeal = meals.find(m => !m.student_id && m.date === date);
-        
-        document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
-        document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
-        document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
         
         document.getElementById('first-course-amount').value = existingMeal.first_course_amount || '';
         document.getElementById('second-course-amount').value = existingMeal.second_course_amount || '';
@@ -976,12 +988,6 @@
       } else {
         editingMealId = null;
         clearMealForm();
-        
-        // Load meal content from admin-saved meals
-        const adminMeal = meals.find(m => !m.student_id && m.date === date);
-        document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
-        document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
-        document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
       }
     }
 
@@ -1277,7 +1283,6 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d995c6b22f3cc4a',t:'MTc3MzA1MTc3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9988e59272cc4a',t:'MTc3MzA1MzU5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
 

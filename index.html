@@ -2,14 +2,13 @@
 <html lang="eu">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ikasleak</title>
+<title>Landab</title>
 
-<!-- Tailwind optimizado -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Google Font (solo una vez) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -19,34 +18,46 @@
 
 body{
 font-family:'Nunito',sans-serif;
-background:#f9fafb;
 }
 
-/* animación ligera */
-.fade{
-animation:fade .3s ease;
-}
+/* eliminado decoding porque no existe en CSS */
 
-@keyframes fade{
-from{opacity:0}
-to{opacity:1}
-}
-
-/* evitar animaciones en móvil */
-@media(max-width:768px){
-.hover-scale:hover{
-transform:none;
-}
+img{
+max-width:100%;
+height:auto;
 }
 
 </style>
 
 </head>
-<body>
 
-<div id="app" class="max-w-xl mx-auto p-4"></div>
+<body class="bg-gray-50">
 
-<script src="app.js"></script>
+<div class="max-w-xl mx-auto p-4">
+
+<!-- título principal -->
+<h1 id="school-title-main" class="text-xl font-extrabold text-emerald-700">
+Landab
+</h1>
+
+<!-- segundo título (antes duplicado) -->
+<h1 id="school-title-header" class="text-xl font-extrabold text-emerald-700">
+Landab
+</h1>
+
+<!-- nombre del estudiante -->
+<h2 id="family-student-name" class="text-2xl font-bold text-gray-800">
+&nbsp;
+</h2>
+
+<!-- imagen optimizada -->
+<img 
+src="foto.jpg"
+loading="lazy"
+decoding="async"
+alt="imagen">
+
+</div>
 
 </body>
 </html>

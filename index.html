@@ -816,7 +816,7 @@
             password: document.getElementById('new-student-password').value
           };
           
-          const result = await window.dataSdk.update(updatedData);
+          const result = await window.data_sdk.update(updatedData);
           
           btn.disabled = false;
           btn.innerHTML = `<span data-eu="Eguneratu" data-es="Actualizar">${t('Eguneratu', 'Actualizar')}</span>`;
@@ -848,7 +848,7 @@
           created_at: new Date().toISOString()
         };
         
-        const result = await window.dataSdk.create(studentData);
+        const result = await window.data_sdk.create(studentData);
         
         btn.disabled = false;
         btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
@@ -1265,6 +1265,7 @@
   </script>
 </body>
 </html>
+
 
 
 

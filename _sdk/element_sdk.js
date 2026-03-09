@@ -1,4 +1,4 @@
-window.element_sdk = {
+window.elementSdk = {
     // Esta es la función que detiene el "Cargando..."
     init: function(config) {
         console.log("SDK de Elementos inicializado localmente");

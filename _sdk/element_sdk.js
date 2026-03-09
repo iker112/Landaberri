@@ -1,17 +1,18 @@
-window.elementSdk = {
-    // Esta es la función que detiene el "Cargando..."
-    init: function(config) {
+// Definimos el objeto con el nombre exacto que busca el index.html
+window.element_sdk = {
+    init: function() {
         console.log("SDK de Elementos inicializado localmente");
-        // Devolvemos una promesa resuelta inmediatamente
+        // Forzamos que la pantalla de carga se oculte si el index no lo hace
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.classList.add('hidden');
+        }
         return Promise.resolve();
     },
-    // Otras funciones que usa tu index.html
     refresh: function() {
         window.location.reload();
     }
 };
 
-// Algunos códigos de Canva buscan esto directamente
-window.initializeApp = function() {
-    return Promise.resolve();
-};
+// Compatibilidad por si acaso
+window.elementSdk = window.element_sdk;

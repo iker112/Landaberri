@@ -2,7 +2,14 @@
 <html lang="eu" class="h-full">
  <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Landaberri Jantokia">
+  <meta name="theme-color" content="#047857">
+  <meta name="description" content="Landaberri Ikastolaren jantoki kudeatzailea">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23047857'/%3E%3Cpath d='M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23DC2626'/%3E%3Cpath d='M45 48 L50 55 L60 42' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>Landaberri Jantokia</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
@@ -124,12 +131,12 @@
      </div>
     </div><!-- Monitor Dashboard -->
     <div id="monitor-dashboard" class="hidden fade-in">
-     <!-- Tab Navigation -->
-     <div class="flex gap-2 mb-6 bg-white rounded-xl p-2 shadow">
-      <button onclick="switchMonitorTab('students')" id="tab-students" class="flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-emerald-600 text-white"> <span data-eu="Ikasleak" data-es="Estudiantes">Ikasleak</span> </button> <button onclick="switchMonitorTab('meals')" id="tab-meals" class="flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200"> <span data-eu="Otorduak" data-es="Comidas">Otorduak</span> </button>
-     </div><!-- Students Management -->
+     <!-- Admin Menu Tabs -->
+     <div id="admin-menu" class="hidden mb-6 flex gap-2 bg-white rounded-xl shadow p-2">
+      <button onclick="switchAdminPanel('students')" id="tab-students" class="flex-1 px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg transition"> <span data-eu="Ikasleen kudeaketa" data-es="Gestión de estudiantes">Ikasleen kudeaketa</span> </button> <button onclick="switchAdminPanel('meals')" id="tab-meals" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Asteko menuak" data-es="Menús de la semana">Asteko menuak</span> </button>
+     </div><!-- Students by Class Level -->
      <div id="students-panel">
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-6">
        <h2 class="text-xl font-bold text-gray-800" data-eu="Ikasleen kudeaketa" data-es="Gestión de estudiantes">Ikasleen kudeaketa</h2><button onclick="showAddStudentForm()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition btn-primary">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg><span data-eu="Gehitu" data-es="Añadir">Gehitu</span> </button>
@@ -147,6 +154,12 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
          <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Mailak" data-es="Clase">Mailak</label> <select id="new-student-class" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"> <option value="" data-eu="Aukeratu" data-es="Seleccionar">Aukeratu</option> <option value="HH2urte">HH 2 urte</option> <option value="HH3urte">HH 3 urte</option> </select>
+         </div>
+         <div></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila" data-es="Email de la familia">Familiaren emaila</label> <input type="email" id="new-student-email" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
          </div>
          <div>
@@ -157,9 +170,9 @@
          <button type="button" onclick="hideAddStudentForm()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Utzi" data-es="Cancelar">Utzi</span> </button> <button type="submit" class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"> <span data-eu="Gorde" data-es="Guardar">Gorde</span> </button>
         </div>
        </form>
-      </div><!-- Students List -->
-      <div id="students-list" class="grid gap-3">
-       <!-- Students will be rendered here -->
+      </div><!-- Students by Class -->
+      <div id="class-groups" class="space-y-6">
+       <!-- Class sections will be rendered here -->
       </div>
       <div id="no-students-message" class="hidden text-center py-12 bg-white rounded-xl">
        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -168,13 +181,79 @@
        </div>
        <p class="text-gray-500" data-eu="Ez dago ikaslerik erregistratuta" data-es="No hay estudiantes registrados">Ez dago ikaslerik erregistratuta</p>
       </div>
-     </div><!-- Meals Management -->
+     </div><!-- Admin Meals Management Panel -->
      <div id="meals-panel" class="hidden">
+      <div class="mb-6">
+       <h2 class="text-2xl font-bold text-gray-800 mb-2" data-eu="Asteko menuak" data-es="Menús de la semana">Asteko menuak</h2>
+       <p class="text-gray-500" data-eu="Sartu otordua egunero" data-es="Introduce comidas cada día">Sartu otordua egunero</p>
+      </div><!-- Week Navigation -->
+      <div class="flex items-center justify-between mb-6 bg-white rounded-xl p-4 shadow">
+       <button onclick="changeWeekAdmin(-1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg></button>
+       <div class="text-center">
+        <p id="admin-week-display" class="font-bold text-lg text-emerald-700"></p>
+        <p class="text-sm text-gray-500" data-eu="Astea" data-es="Semana">Astea</p>
+       </div><button onclick="changeWeekAdmin(1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
+        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg></button>
+      </div><!-- Days Grid for Menu Entry -->
+      <div id="admin-meals-grid" class="space-y-6">
+       <!-- Day sections will be rendered here -->
+      </div>
+     </div><!-- Meal Edit Modal for Records -->
+     <div id="records-edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
+       <div class="bg-emerald-600 text-white px-6 py-4 flex items-center justify-between sticky top-0">
+        <h3 class="font-bold text-lg" data-eu="Editatu otordua" data-es="Editar comida">Editatu otordua</h3><button onclick="closeRecordsEditModal()" class="text-white hover:bg-emerald-700 p-1 rounded">
+         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+         </svg></button>
+       </div>
+       <div class="p-6 space-y-4">
+        <div id="edit-modal-info" class="text-sm text-gray-600"></div>
+        <form id="records-edit-form" onsubmit="saveRecordMeal(event)" class="space-y-4">
+         <div class="grid grid-cols-2 gap-4">
+          <div>
+           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
+           <div id="edit-first-display" class="text-gray-700 font-medium mb-2"></div>
+           <div class="flex gap-1">
+            <button type="button" onclick="setEditRecordAmount('first', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="first">🌟</button> <button type="button" onclick="setEditRecordAmount('first', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="first">😊</button> <button type="button" onclick="setEditRecordAmount('first', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="first">😐</button> <button type="button" onclick="setEditRecordAmount('first', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="first">😕</button>
+           </div><input type="hidden" id="edit-record-first-amount" value="">
+          </div>
+          <div>
+           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
+           <div id="edit-second-display" class="text-gray-700 font-medium mb-2"></div>
+           <div class="flex gap-1">
+            <button type="button" onclick="setEditRecordAmount('second', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="second">🌟</button> <button type="button" onclick="setEditRecordAmount('second', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="second">😊</button> <button type="button" onclick="setEditRecordAmount('second', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="second">😐</button> <button type="button" onclick="setEditRecordAmount('second', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="second">😕</button>
+           </div><input type="hidden" id="edit-record-second-amount" value="">
+          </div>
+         </div>
+         <div class="grid grid-cols-2 gap-4">
+          <div>
+           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Postrea" data-es="Postre">Postrea</label>
+           <div id="edit-dessert-display" class="text-gray-700 font-medium mb-2"></div>
+           <div class="flex gap-1">
+            <button type="button" onclick="setEditRecordAmount('dessert', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="dessert">🌟</button> <button type="button" onclick="setEditRecordAmount('dessert', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="dessert">😊</button> <button type="button" onclick="setEditRecordAmount('dessert', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="dessert">😐</button> <button type="button" onclick="setEditRecordAmount('dessert', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="dessert">😕</button>
+           </div><input type="hidden" id="edit-record-dessert-amount" value="">
+          </div>
+          <div>
+           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Oharrak" data-es="Notas">Oharrak</label> <textarea id="edit-record-notes" rows="2" class="w-full px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-emerald-500"></textarea>
+          </div>
+         </div>
+         <div class="flex gap-2 justify-end pt-4 border-t border-gray-200">
+          <button type="button" onclick="closeRecordsEditModal()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Utzi" data-es="Cancelar">Utzi</span> </button> <button type="submit" class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"> <span data-eu="Gorde aldaketak" data-es="Guardar cambios">Gorde aldaketak</span> </button>
+         </div>
+        </form>
+       </div>
+      </div>
+     </div>
+     <div id="meals-panel-monitor" class="hidden">
+      <button onclick="backFromMeals()" class="flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-4">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+       </svg><span data-eu="Atzera ikasleetara" data-es="Volver a estudiantes">Atzera ikasleetara</span> </button>
       <div class="bg-white rounded-xl shadow p-4 mb-4">
+       <h2 id="meal-student-heading" class="text-xl font-bold text-gray-800 mb-4"></h2>
        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Aukeratu ikaslea" data-es="Selecciona estudiante">Aukeratu ikaslea</label> <select id="meal-student-select" onchange="loadStudentMeals()" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"> <option value="" data-eu="-- Aukeratu --" data-es="-- Seleccionar --">-- Aukeratu --</option> </select>
-        </div>
         <div>
          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Data" data-es="Fecha">Data</label> <input type="date" id="meal-date" onchange="loadStudentMeals()" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
         </div>
@@ -186,7 +265,8 @@
        <form onsubmit="saveMeal(event)" class="space-y-6">
         <!-- First Course -->
         <div class="bg-emerald-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-emerald-700 mb-2" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label> <input type="text" id="first-course" class="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 mb-3" placeholder="Ej: Arroz con verduras">
+         <label class="block text-sm font-bold text-emerald-700 mb-2" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
+         <p id="first-course-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
          <div class="flex flex-wrap gap-2">
           <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
           <div class="flex gap-2 ml-auto">
@@ -195,7 +275,8 @@
          </div><input type="hidden" id="first-course-amount" value="">
         </div><!-- Second Course -->
         <div class="bg-red-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-red-700 mb-2" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label> <input type="text" id="second-course" class="w-full px-3 py-2 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500 mb-3" placeholder="Ej: Pollo con patatas">
+         <label class="block text-sm font-bold text-red-700 mb-2" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
+         <p id="second-course-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
          <div class="flex flex-wrap gap-2">
           <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
           <div class="flex gap-2 ml-auto">
@@ -204,7 +285,8 @@
          </div><input type="hidden" id="second-course-amount" value="">
         </div><!-- Dessert -->
         <div class="bg-amber-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-amber-700 mb-2" data-eu="Postrea" data-es="Postre">Postrea</label> <input type="text" id="dessert" class="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 mb-3" placeholder="Ej: Fruta / Yogur">
+         <label class="block text-sm font-bold text-amber-700 mb-2" data-eu="Postrea" data-es="Postre">Postrea</label>
+         <p id="dessert-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
          <div class="flex flex-wrap gap-2">
           <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
           <div class="flex gap-2 ml-auto">
@@ -243,7 +325,7 @@
         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
        </div>
-       <p class="text-gray-500" data-eu="Aukeratu ikasle bat eta data bat" data-es="Selecciona un estudiante y una fecha">Aukeratu ikasle bat eta data bat</p>
+       <p class="text-gray-500" data-eu="Aukeratu data bat" data-es="Selecciona una fecha">Aukeratu data bat</p>
       </div>
      </div>
     </div>
@@ -260,12 +342,14 @@
     // STATE & CONFIGURATION
     // =====================
     let currentLang = 'eu';
-    let currentUser = null; // { type: 'family' | 'monitor', studentId?: string, email?: string }
+    let currentUser = null;
     let allData = [];
     let students = [];
     let meals = [];
     let currentWeekOffset = 0;
+    let adminWeekOffset = 0;
     let editingMealId = null;
+    let selectedStudentForMeals = null;
     
     const MONITOR_CODE = 'landaberri2024';
 
@@ -292,8 +376,12 @@
           if (currentUser.type === 'family') {
             renderFamilyMeals();
           } else if (currentUser.type === 'monitor') {
-            renderStudentsList();
-            updateStudentSelect();
+            if (currentUser.isAdmin) {
+              renderStudentsByClass();
+              renderAdminMealsPanel();
+            } else {
+              renderStudentsByClass();
+            }
           }
         }
       }
@@ -353,7 +441,6 @@
         el.textContent = el.getAttribute(`data-${currentLang}`);
       });
       
-      // Update select options
       document.querySelectorAll('option[data-eu][data-es]').forEach(opt => {
         opt.textContent = opt.getAttribute(`data-${currentLang}`);
       });
@@ -386,14 +473,13 @@
       const email = document.getElementById('login-email').value.trim().toLowerCase();
       const password = document.getElementById('login-password').value;
       
-      // Check if admin
       if (email === 'jangela@landaberrikastola.org' && password === 'admin2024') {
         currentUser = { type: 'monitor', isAdmin: true, email: email };
         document.getElementById('logout-btn').classList.remove('hidden');
+        document.getElementById('admin-menu').classList.remove('hidden');
         showScreen('monitor-dashboard');
-        switchMonitorTab('students');
-        renderStudentsList();
-        updateStudentSelect();
+        renderStudentsByClass();
+        renderAdminMealsPanel();
         document.getElementById('login-error').classList.add('hidden');
         return;
       }
@@ -421,11 +507,11 @@
       const code = document.getElementById('monitor-code').value;
       
       if (code === MONITOR_CODE) {
-        currentUser = { type: 'monitor' };
+        currentUser = { type: 'monitor', isAdmin: false };
         document.getElementById('logout-btn').classList.remove('hidden');
+        document.getElementById('admin-menu').classList.add('hidden');
         showScreen('monitor-dashboard');
-        renderStudentsList();
-        updateStudentSelect();
+        renderStudentsByClass();
         document.getElementById('monitor-login-error').classList.add('hidden');
       } else {
         const errorEl = document.getElementById('monitor-login-error');
@@ -444,18 +530,228 @@
     }
 
     // =====================
-    // MONITOR FUNCTIONS
+    // ADMIN PANEL SWITCHING
     // =====================
-    function switchMonitorTab(tab) {
-      document.getElementById('tab-students').className = tab === 'students' 
-        ? 'flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-emerald-600 text-white'
-        : 'flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200';
-      document.getElementById('tab-meals').className = tab === 'meals'
-        ? 'flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-emerald-600 text-white'
-        : 'flex-1 py-2.5 px-4 rounded-lg font-semibold transition bg-gray-100 text-gray-600 hover:bg-gray-200';
+    function switchAdminPanel(panel) {
+      if (panel === 'students') {
+        document.getElementById('students-panel').classList.remove('hidden');
+        document.getElementById('meals-panel').classList.add('hidden');
+        document.getElementById('tab-students').classList.add('bg-emerald-600', 'text-white');
+        document.getElementById('tab-students').classList.remove('bg-gray-100', 'text-gray-700');
+        document.getElementById('tab-meals').classList.remove('bg-emerald-600', 'text-white');
+        document.getElementById('tab-meals').classList.add('bg-gray-100', 'text-gray-700');
+      } else if (panel === 'meals') {
+        document.getElementById('students-panel').classList.add('hidden');
+        document.getElementById('meals-panel').classList.remove('hidden');
+        document.getElementById('tab-meals').classList.add('bg-emerald-600', 'text-white');
+        document.getElementById('tab-meals').classList.remove('bg-gray-100', 'text-gray-700');
+        document.getElementById('tab-students').classList.remove('bg-emerald-600', 'text-white');
+        document.getElementById('tab-students').classList.add('bg-gray-100', 'text-gray-700');
+        updateAdminWeekDisplay();
+      }
+    }
+
+    // =====================
+    // ADMIN MEALS FUNCTIONS
+    // =====================
+    function getWeekDatesAdmin(offset = 0) {
+      const now = new Date();
+      const dayOfWeek = now.getDay();
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + (offset * 7));
       
-      document.getElementById('students-panel').classList.toggle('hidden', tab !== 'students');
-      document.getElementById('meals-panel').classList.toggle('hidden', tab !== 'meals');
+      const dates = [];
+      for (let i = 0; i < 5; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        dates.push(d.toISOString().split('T')[0]);
+      }
+      return dates;
+    }
+
+    function updateAdminWeekDisplay() {
+      const dates = getWeekDatesAdmin(adminWeekOffset);
+      const start = new Date(dates[0]);
+      const end = new Date(dates[4]);
+      const months = currentLang === 'eu'
+        ? ['Urtarila', 'Otsaila', 'Martxoa', 'Apirila', 'Maiatza', 'Ekaina', 'Uztaila', 'Abuztua', 'Iraila', 'Urria', 'Azaroa', 'Abendua']
+        : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      
+      document.getElementById('admin-week-display').textContent = 
+        `${start.getDate()} - ${end.getDate()} ${months[end.getMonth()]}`;
+    }
+
+    function changeWeekAdmin(direction) {
+      adminWeekOffset += direction;
+      updateAdminWeekDisplay();
+      renderAdminMealsPanel();
+    }
+
+    function renderAdminMealsPanel() {
+      const container = document.getElementById('admin-meals-grid');
+      container.innerHTML = '';
+      
+      const weekDates = getWeekDatesAdmin(adminWeekOffset);
+      
+      weekDates.forEach(date => {
+        const dayOfWeek = new Date(date).getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6) return; // Skip weekends
+        
+        const dayMeal = meals.find(m => m.date === date);
+        
+        const dayCard = document.createElement('div');
+        dayCard.className = 'bg-white rounded-xl shadow-lg p-6';
+        dayCard.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-gray-800">${formatDate(date)}</h3>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-emerald-50 p-4 rounded-lg">
+              <label class="block text-sm font-bold text-emerald-700 mb-2" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
+              <input type="text" class="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="Ej: Arroz con verduras" value="${dayMeal?.first_course || ''}" onchange="saveAdminMeal('${date}', 'first_course', this.value)">
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg">
+              <label class="block text-sm font-bold text-red-700 mb-2" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
+              <input type="text" class="w-full px-3 py-2 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500" placeholder="Ej: Pollo con patatas" value="${dayMeal?.second_course || ''}" onchange="saveAdminMeal('${date}', 'second_course', this.value)">
+            </div>
+            <div class="bg-amber-50 p-4 rounded-lg">
+              <label class="block text-sm font-bold text-amber-700 mb-2" data-eu="Postrea" data-es="Postre">Postrea</label>
+              <input type="text" class="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Ej: Fruta / Yogur" value="${dayMeal?.dessert || ''}" onchange="saveAdminMeal('${date}', 'dessert', this.value)">
+            </div>
+          </div>
+        `;
+        
+        container.appendChild(dayCard);
+      });
+    }
+
+    async function saveAdminMeal(date, field, value) {
+      const existingMeal = meals.find(m => m.date === date && !m.student_id);
+      
+      const mealData = {
+        type: 'meal',
+        student_id: '',
+        date: date,
+        first_course: field === 'first_course' ? value : (existingMeal?.first_course || ''),
+        first_course_amount: existingMeal?.first_course_amount || '',
+        second_course: field === 'second_course' ? value : (existingMeal?.second_course || ''),
+        second_course_amount: existingMeal?.second_course_amount || '',
+        dessert: field === 'dessert' ? value : (existingMeal?.dessert || ''),
+        dessert_amount: existingMeal?.dessert_amount || '',
+        lokoluxka: '',
+        lokoluxka_amount: '',
+        pixa: '',
+        pixa_amount: '',
+        notes: existingMeal?.notes || '',
+        created_at: new Date().toISOString(),
+        email_sent: false
+      };
+
+      if (existingMeal && existingMeal.__backendId) {
+        await window.dataSdk.update({ ...existingMeal, ...mealData });
+      } else {
+        if (meals.length >= 999) {
+          showToast(t('Gehienezko erregistro kopurura iritsi zara', 'Has alcanzado el límite máximo de registros'));
+          return;
+        }
+        await window.dataSdk.create(mealData);
+      }
+    }
+
+    // =====================
+    // MONITOR FUNCTIONS - STUDENTS
+    // =====================
+    function renderStudentsByClass() {
+      const container = document.getElementById('class-groups');
+      const noStudentsMsg = document.getElementById('no-students-message');
+      
+      if (students.length === 0) {
+        container.innerHTML = '';
+        noStudentsMsg.classList.remove('hidden');
+        return;
+      }
+      
+      noStudentsMsg.classList.add('hidden');
+      container.innerHTML = '';
+      
+      // Group students by class
+      const classLevels = ['HH2urte', 'HH3urte'];
+      
+      classLevels.forEach(classLevel => {
+        const classStudents = students.filter(s => s.class_level === classLevel);
+        
+        if (classStudents.length === 0) return;
+        
+        const classSection = document.createElement('div');
+        classSection.className = 'bg-white rounded-xl shadow-md overflow-hidden';
+        
+        const classLabel = classLevel === 'HH2urte' ? 'HH 2 urte' : 'HH 3 urte';
+        const classColor = classLevel === 'HH2urte' ? 'emerald' : 'blue';
+        
+        classSection.innerHTML = `
+          <div class="bg-${classColor}-100 px-4 py-3 border-b border-${classColor}-200">
+            <h3 class="font-bold text-${classColor}-800">${classLabel}</h3>
+          </div>
+          <div class="divide-y" data-class-level="${classLevel}">
+            <!-- Students will be added here -->
+          </div>
+        `;
+        
+        const studentsList = classSection.querySelector('[data-class-level]');
+        classStudents.forEach(student => {
+          studentsList.appendChild(createStudentCard(student));
+        });
+        
+        container.appendChild(classSection);
+      });
+    }
+
+    function createStudentCard(student) {
+      const card = document.createElement('div');
+      card.className = 'p-4 hover:bg-gray-50 cursor-pointer transition flex items-center justify-between';
+      card.dataset.studentId = student.student_id;
+      
+      // Both monitors and admins can click to open meal entry
+      card.onclick = () => openMealsForStudent(student);
+      
+      card.innerHTML = `
+        <div class="flex items-center gap-3 flex-1">
+          <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+            <span class="text-xl">👶</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800">${student.student_name} ${student.student_surname}</h3>
+            <p class="text-sm text-gray-500">${student.family_email}</p>
+          </div>
+        </div>
+        ${currentUser && currentUser.isAdmin ? `
+          <div class="flex gap-2" data-student-id="${student.student_id}">
+            <button onclick="event.stopPropagation(); editStudent(this)" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="${t('Editatu', 'Editar')}">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </button>
+            <button id="delete-btn-${student.student_id}" onclick="event.stopPropagation(); confirmDeleteStudent('${student.student_id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="${t('Ezabatu', 'Eliminar')}">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        ` : ''}
+      `;
+      
+      return card;
+    }
+
+    function openMealsForStudent(student) {
+      selectedStudentForMeals = student;
+      document.getElementById('meal-student-heading').textContent = `${student.student_name} ${student.student_surname}`;
+      document.getElementById('meal-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('students-panel').classList.add('hidden');
+      document.getElementById('meals-panel-monitor').classList.remove('hidden');
+      loadStudentMeals();
+    }
+
+    function backFromMeals() {
+      selectedStudentForMeals = null;
+      document.getElementById('students-panel').classList.remove('hidden');
+      document.getElementById('meals-panel-monitor').classList.add('hidden');
     }
 
     function showAddStudentForm() {
@@ -471,10 +767,10 @@
       document.getElementById('add-student-form').dataset.editing = 'false';
       document.getElementById('new-student-name').value = '';
       document.getElementById('new-student-surname').value = '';
+      document.getElementById('new-student-class').value = '';
       document.getElementById('new-student-email').value = '';
       document.getElementById('new-student-password').value = '';
       
-      // Reset form title and button
       document.querySelector('#add-student-form h3').textContent = t('Ikasle berria', 'Nuevo estudiante');
       document.querySelector('#add-student-form button[type="submit"]').innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
     }
@@ -489,25 +785,20 @@
         return;
       }
       
-      // Load form with student data
       document.getElementById('new-student-name').value = student.student_name || '';
       document.getElementById('new-student-surname').value = student.student_surname || '';
+      document.getElementById('new-student-class').value = student.class_level || '';
       document.getElementById('new-student-email').value = student.family_email || '';
       document.getElementById('new-student-password').value = student.password || '';
       
-      // Mark as editing
       const form = document.getElementById('add-student-form');
       form.dataset.editing = 'true';
       form.dataset.studentId = studentId;
       
-      // Update form title and button
       document.querySelector('#add-student-form h3').textContent = t('Editatu ikaslea', 'Editar estudiante');
       document.querySelector('#add-student-form button[type="submit"]').innerHTML = `<span data-eu="Eguneratu" data-es="Actualizar">${t('Eguneratu', 'Actualizar')}</span>`;
       
-      // Show form
       document.getElementById('add-student-form').classList.remove('hidden');
-      
-      // Scroll to form
       document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -523,13 +814,13 @@
       btn.innerHTML = `<span class="animate-pulse">${isEditing ? t('Eguneratzen...', 'Actualizando...') : t('Gehituten...', 'Añadiendo...')}</span>`;
       
       if (isEditing) {
-        // Update existing student
         const existingStudent = allData.find(d => d.student_id === studentId && d.type === 'student');
         if (existingStudent) {
           const updatedData = {
             ...existingStudent,
             student_name: document.getElementById('new-student-name').value.trim(),
             student_surname: document.getElementById('new-student-surname').value.trim(),
+            class_level: document.getElementById('new-student-class').value,
             family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
             password: document.getElementById('new-student-password').value
           };
@@ -547,7 +838,6 @@
           }
         }
       } else {
-        // Create new student
         if (students.length >= 999) {
           showToast(t('Gehienezko ikasle kopurura iritsi zara', 'Has alcanzado el límite máximo de estudiantes'));
           btn.disabled = false;
@@ -560,6 +850,7 @@
           student_id: 'STU-' + Date.now(),
           student_name: document.getElementById('new-student-name').value.trim(),
           student_surname: document.getElementById('new-student-surname').value.trim(),
+          class_level: document.getElementById('new-student-class').value,
           family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
           password: document.getElementById('new-student-password').value,
           created_at: new Date().toISOString()
@@ -577,70 +868,6 @@
           showToast(t('Errorea ikaslea gehitzean', 'Error al añadir estudiante'));
         }
       }
-    }
-
-    function renderStudentsList() {
-      const container = document.getElementById('students-list');
-      const noStudentsMsg = document.getElementById('no-students-message');
-      const addBtn = document.querySelector('button[onclick="showAddStudentForm()"]');
-      
-      // Hide add button for non-admin monitors
-      if (addBtn) {
-        addBtn.classList.toggle('hidden', currentUser && !currentUser.isAdmin);
-      }
-      
-      if (students.length === 0) {
-        container.innerHTML = '';
-        noStudentsMsg.classList.remove('hidden');
-        return;
-      }
-      
-      noStudentsMsg.classList.add('hidden');
-      
-      const existingCards = new Map([...container.children].map(el => [el.dataset.studentId, el]));
-      
-      students.forEach(student => {
-        if (existingCards.has(student.student_id)) {
-          updateStudentCard(existingCards.get(student.student_id), student);
-          existingCards.delete(student.student_id);
-        } else {
-          container.appendChild(createStudentCard(student));
-        }
-      });
-      
-      existingCards.forEach(el => el.remove());
-    }
-
-    function createStudentCard(student) {
-      const card = document.createElement('div');
-      card.className = 'bg-white rounded-xl shadow p-4 flex items-center justify-between card-hover transition';
-      card.dataset.studentId = student.student_id;
-      updateStudentCard(card, student);
-      return card;
-    }
-
-    function updateStudentCard(card, student) {
-      card.innerHTML = `
-        <div class="flex items-center gap-3 flex-1">
-          <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-            <span class="text-xl">👶</span>
-          </div>
-          <div>
-            <h3 class="font-bold text-gray-800">${student.student_name} ${student.student_surname}</h3>
-            <p class="text-sm text-gray-500">${student.family_email}</p>
-          </div>
-        </div>
-        ${currentUser && currentUser.type === 'monitor' && currentUser.isAdmin ? `
-          <div class="flex gap-2" data-student-id="${student.student_id}">
-            <button onclick="editStudent(this)" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="${t('Editatu', 'Editar')}">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </button>
-            <button id="delete-btn-${student.student_id}" onclick="confirmDeleteStudent('${student.student_id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="${t('Ezabatu', 'Eliminar')}">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </div>
-        ` : ''}
-      `;
     }
 
     function confirmDeleteStudent(studentId) {
@@ -684,7 +911,6 @@
     }
 
     async function deleteStudent(studentId) {
-      // Find the full record with __backendId from allData
       const fullRecord = allData.find(d => d.student_id === studentId && d.type === 'student');
       
       if (!fullRecord || !fullRecord.__backendId) {
@@ -692,7 +918,6 @@
         return;
       }
       
-      // Delete all meals for this student
       const studentMeals = allData.filter(d => d.student_id === studentId && d.type === 'meal');
       for (const meal of studentMeals) {
         if (meal && meal.__backendId) {
@@ -700,50 +925,19 @@
         }
       }
       
-      // Delete the student
       const result = await window.dataSdk.delete(fullRecord);
       
       if (result && result.isOk) {
         showToast(t('Ikaslea eta bere otorduak ezabatu dira', 'Estudiante y sus comidas eliminadas'));
-        // Find and remove the student card from DOM - only direct children
-        const container = document.getElementById('students-list');
-        const cardsToCheck = Array.from(container.children);
-        cardsToCheck.forEach(card => {
-          if (card.dataset.studentId === studentId) {
-            card.remove();
-          }
-        });
-        // Check if there are no more students and show empty message
-        if (container.children.length === 0) {
-          document.getElementById('no-students-message').classList.remove('hidden');
-        }
       } else {
         showToast(t('Errorea ikaslea ezabatzean', 'Error al eliminar estudiante'));
       }
     }
 
-    function updateStudentSelect() {
-      const select = document.getElementById('meal-student-select');
-      const currentValue = select.value;
-      
-      select.innerHTML = `<option value="" data-eu="-- Aukeratu --" data-es="-- Seleccionar --">${t('-- Aukeratu --', '-- Seleccionar --')}</option>`;
-      
-      students.forEach(student => {
-        const option = document.createElement('option');
-        option.value = student.student_id;
-        option.textContent = `${student.student_name} ${student.student_surname}`;
-        if (student.student_id === currentValue) {
-          option.selected = true;
-        }
-        select.appendChild(option);
-      });
-    }
-
     function loadStudentMeals() {
-      const studentId = document.getElementById('meal-student-select').value;
       const date = document.getElementById('meal-date').value;
       
-      if (!studentId || !date) {
+      if (!date || !selectedStudentForMeals) {
         document.getElementById('meal-entry-form').classList.add('hidden');
         document.getElementById('select-student-message').classList.remove('hidden');
         return;
@@ -752,26 +946,28 @@
       document.getElementById('select-student-message').classList.add('hidden');
       document.getElementById('meal-entry-form').classList.remove('hidden');
       
-      const student = students.find(s => s.student_id === studentId);
       document.getElementById('meal-form-subtitle').textContent = 
-        `${student.student_name} ${student.student_surname} - ${formatDate(date)}`;
+        `${selectedStudentForMeals.student_name} ${selectedStudentForMeals.student_surname} - ${formatDate(date)}`;
       
-      // Check if meal exists for this date
-      const existingMeal = meals.find(m => m.student_id === studentId && m.date === date);
+      const existingMeal = meals.find(m => m.student_id === selectedStudentForMeals.student_id && m.date === date);
       
       if (existingMeal) {
         editingMealId = existingMeal.__backendId;
-        document.getElementById('first-course').value = existingMeal.first_course || '';
+        
+        // Load meal content from admin-saved meals
+        const adminMeal = meals.find(m => !m.student_id && m.date === date);
+        
+        document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
+        document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
+        document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
+        
         document.getElementById('first-course-amount').value = existingMeal.first_course_amount || '';
-        document.getElementById('second-course').value = existingMeal.second_course || '';
         document.getElementById('second-course-amount').value = existingMeal.second_course_amount || '';
-        document.getElementById('dessert').value = existingMeal.dessert || '';
         document.getElementById('dessert-amount').value = existingMeal.dessert_amount || '';
         document.getElementById('lokoluxka-amount').value = existingMeal.lokoluxka_amount || '';
         document.getElementById('pixa-amount').value = existingMeal.pixa_amount || '';
         document.getElementById('meal-notes').value = existingMeal.notes || '';
         
-        // Update button states
         updateAmountButtons('first', existingMeal.first_course_amount);
         updateAmountButtons('second', existingMeal.second_course_amount);
         updateAmountButtons('dessert', existingMeal.dessert_amount);
@@ -780,15 +976,18 @@
       } else {
         editingMealId = null;
         clearMealForm();
+        
+        // Load meal content from admin-saved meals
+        const adminMeal = meals.find(m => !m.student_id && m.date === date);
+        document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
+        document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
+        document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
       }
     }
 
     function clearMealForm() {
-      document.getElementById('first-course').value = '';
       document.getElementById('first-course-amount').value = '';
-      document.getElementById('second-course').value = '';
       document.getElementById('second-course-amount').value = '';
-      document.getElementById('dessert').value = '';
       document.getElementById('dessert-amount').value = '';
       document.getElementById('lokoluxka-amount').value = '';
       document.getElementById('pixa-amount').value = '';
@@ -798,7 +997,8 @@
     }
 
     function selectAmount(field, amount) {
-      document.getElementById(`${field === 'dessert' ? 'dessert-amount' : field + (field === 'lokoluxka' || field === 'pixa' ? '-amount' : '-course-amount')}`).value = amount;
+      const fieldId = field === 'dessert' ? 'dessert-amount' : (field === 'lokoluxka' || field === 'pixa' ? `${field}-amount` : `${field}-course-amount`);
+      document.getElementById(fieldId).value = amount;
       updateAmountButtons(field, amount);
     }
 
@@ -811,25 +1011,30 @@
     async function saveMeal(e) {
       e.preventDefault();
       
-      const studentId = document.getElementById('meal-student-select').value;
+      if (!selectedStudentForMeals) {
+        showToast(t('Errorea: ikaslea aukeratu gabe', 'Error: sin estudiante seleccionado'));
+        return;
+      }
+      
       const date = document.getElementById('meal-date').value;
       
       const mealData = {
         type: 'meal',
-        student_id: studentId,
+        student_id: selectedStudentForMeals.student_id,
         date: date,
-        first_course: document.getElementById('first-course').value,
+        first_course: '',
         first_course_amount: document.getElementById('first-course-amount').value,
-        second_course: document.getElementById('second-course').value,
+        second_course: '',
         second_course_amount: document.getElementById('second-course-amount').value,
-        dessert: document.getElementById('dessert').value,
+        dessert: '',
         dessert_amount: document.getElementById('dessert-amount').value,
         lokoluxka: '',
         lokoluxka_amount: document.getElementById('lokoluxka-amount').value,
         pixa: '',
         pixa_amount: document.getElementById('pixa-amount').value,
         notes: document.getElementById('meal-notes').value,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        email_sent: false
       };
       
       const btn = document.getElementById('save-meal-btn');
@@ -920,16 +1125,16 @@
       const studentMeals = meals.filter(m => m.student_id === currentUser.studentId);
       const weekMeals = weekDates.map(date => {
         const meal = studentMeals.find(m => m.date === date);
-        return { date, meal };
+        const adminMeal = meals.find(m => !m.student_id && m.date === date);
+        return { date, meal, adminMeal };
       });
       
-      const hasMeals = weekMeals.some(wm => wm.meal);
+      const hasMeals = weekMeals.some(wm => wm.meal || wm.adminMeal);
       
       if (!hasMeals) {
         container.innerHTML = '';
         noMealsMsg.classList.remove('hidden');
         
-        // Still show the days with empty cards
         weekMeals.forEach(({ date }) => {
           const card = document.createElement('div');
           card.className = 'bg-white rounded-xl shadow p-4 opacity-50';
@@ -948,11 +1153,11 @@
       noMealsMsg.classList.add('hidden');
       container.innerHTML = '';
       
-      weekMeals.forEach(({ date, meal }) => {
+      weekMeals.forEach(({ date, meal, adminMeal }) => {
         const card = document.createElement('div');
         card.className = 'bg-white rounded-xl shadow-lg overflow-hidden card-hover transition';
         
-        if (meal) {
+        if (meal || adminMeal) {
           card.innerHTML = `
             <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-3">
               <div class="flex items-center gap-2">
@@ -961,12 +1166,12 @@
               </div>
             </div>
             <div class="p-4 space-y-3">
-              ${renderMealItem(t('Lehen platera', 'Primer plato'), meal.first_course, meal.first_course_amount, 'emerald')}
-              ${renderMealItem(t('Bigarren platera', 'Segundo plato'), meal.second_course, meal.second_course_amount, 'red')}
-              ${renderMealItem(t('Postrea', 'Postre'), meal.dessert, meal.dessert_amount, 'amber')}
-              ${renderMealItemSimple(t('Lokoluxka', 'Chocolate'), meal.lokoluxka_amount, 'blue')}
-              ${renderMealItemSimple(t('Pixa', 'Bebida'), meal.pixa_amount, 'purple')}
-              ${meal.notes ? `<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-sm text-gray-500"><strong>${t('Oharrak', 'Notas')}:</strong> ${meal.notes}</p></div>` : ''}
+              ${renderMealItem(t('Lehen platera', 'Primer plato'), adminMeal?.first_course || '', meal?.first_course_amount || '', 'emerald')}
+              ${renderMealItem(t('Bigarren platera', 'Segundo plato'), adminMeal?.second_course || '', meal?.second_course_amount || '', 'red')}
+              ${renderMealItem(t('Postrea', 'Postre'), adminMeal?.dessert || '', meal?.dessert_amount || '', 'amber')}
+              ${renderMealItemSimple(t('Lokoluxka', 'Chocolate'), meal?.lokoluxka_amount || '', 'blue')}
+              ${renderMealItemSimple(t('Pixa', 'Bebida'), meal?.pixa_amount || '', 'purple')}
+              ${meal?.notes ? `<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-sm text-gray-500"><strong>${t('Oharrak', 'Notas')}:</strong> ${meal.notes}</p></div>` : ''}
             </div>
           `;
         } else {
@@ -1072,5 +1277,6 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d7f9e19c340cc4a',t:'MTc3Mjc4MTgzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d995c6b22f3cc4a',t:'MTc3MzA1MTc3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+

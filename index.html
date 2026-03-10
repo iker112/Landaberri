@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="eu" class="h-full">
  <head>
+  <link rel="icon" href="data:,">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -365,26 +366,7 @@
     // =====================
     // SDK INITIALIZATION
     // =====================
-    const dataHandler = {
-      onDataChanged(data) {
-        allData = data;
-        students = data.filter(d => d.type === 'student');
-        meals = data.filter(d => d.type === 'meal');
-        
-        if (currentUser) {
-          if (currentUser.type === 'family') {
-            renderFamilyMeals();
-          } else if (currentUser.type === 'monitor') {
-            if (currentUser.isAdmin) {
-              renderStudentsByClass();
-              renderAdminMealsPanel();
-            } else {
-              renderStudentsByClass();
-            }
-          }
-        }
-      }
-    };
+    
 
     async function initApp() {
       // Init Element SDK
@@ -1319,6 +1301,7 @@ async function saveToSheets(student, mealData = {}) {
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9b49a3a6a2cbb8',t:'MTc3MzA3MTk3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
 

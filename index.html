@@ -1,1206 +1,132 @@
+
+
+
 <!doctype html>
 <html lang="eu" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Landaberri Jantokia">
-  <meta name="theme-color" content="#047857">
-  <meta name="description" content="Landaberri Ikastolaren jantoki kudeatzailea">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23047857'/%3E%3Cpath d='M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23DC2626'/%3E%3Cpath d='M45 48 L50 55 L60 42' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  <title>Landaberri Jantokia</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="sdk/element_sdk.js"></script>
-  <script src="sdk/data_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Nunito', sans-serif; }
-    .amount-btn.selected { transform: scale(1.1); box-shadow: 0 0 0 3px #047857; }
-    .fade-in { animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-    .btn-primary { transition: all 0.2s ease; }
-    .btn-primary:hover { transform: translateY(-1px); }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body class="h-full bg-gradient-to-br from-emerald-50 via-white to-red-50">
-  <div id="app" class="h-full overflow-auto">
-   <!-- Header -->
-   <header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <!-- Logo SVG Landaberri style -->
-      <svg width="50" height="50" viewbox="0 0 100 100" class="drop-shadow">
-       <circle cx="50" cy="50" r="45" fill="#047857" /> <path d="M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z" fill="white" /> <circle cx="50" cy="50" r="12" fill="#DC2626" /> <path d="M45 48 L50 55 L60 42" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" />
-      </svg>
-      <div>
-       <h1 id="school-title" class="text-xl font-extrabold text-emerald-700">Landaberri Ikastola</h1>
-       <p class="text-xs text-gray-500" data-eu="Haur Hezkuntza 2 urte - Jantokia" data-es="Educación Infantil 2 años - Comedor">Haur Hezkuntza 2 urte - Jantokia</p>
-      </div>
-     </div>
-     <div class="flex items-center gap-2">
-      <!-- Language Toggle --> <button id="lang-toggle" onclick="toggleLanguage()" class="flex items-center gap-1 px-3 py-1.5 bg-gray-100 rounded-full text-sm font-semibold hover:bg-gray-200 transition"> <span id="current-lang">EU</span>
-       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
-       </svg></button> <!-- Logout button (hidden by default) --> <button id="logout-btn" onclick="logout()" class="hidden px-3 py-1.5 bg-red-100 text-red-700 rounded-full text-sm font-semibold hover:bg-red-200 transition"> <span data-eu="Irten" data-es="Salir">Irten</span> </button>
-     </div>
-    </div>
-   </header><!-- Main Content -->
-   <main class="max-w-6xl mx-auto px-4 py-6">
-    <!-- Login Screen -->
-    <div id="login-screen" class="fade-in">
-     <div class="max-w-md mx-auto">
-      <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-       <div class="text-center mb-6">
-        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-         <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-         </svg>
+<!doctype html>
+<html lang="eu" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landaberri Ikastola - Jantokia</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Nunito', sans-serif; }
+        .login-card { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="h-full bg-[#f8fcfb]">
+    <header class="w-full p-4 flex justify-between items-center bg-transparent">
+        <div class="flex items-center gap-3">
+            <div class="bg-[#047857] p-2 rounded-lg shadow-sm">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2L3 9v11a2 2 0 002 2h14a2 2 0 002-2V9l-9-7z" />
+                    <polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="2"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-[#047857] font-extrabold text-lg leading-tight">Landaberri Ikastola</h1>
+                <p class="text-gray-400 text-[10px] uppercase tracking-wider">Haur Hezkuntza 2 urte - Jantokia</p>
+            </div>
         </div>
-        <h2 id="welcome-title" class="text-2xl font-bold text-gray-800" data-eu="Ongi etorri!" data-es="¡Bienvenido/a!">Ongi etorri!</h2>
-        <p class="text-gray-500 mt-1" data-eu="Sartu zure datuak" data-es="Introduce tus datos">Sartu zure datuak</p>
-       </div>
-       <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Posta elektronikoa" data-es="Correo electrónico">Posta elektronikoa</label> <input type="email" id="login-email" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="familia@email.com">
+        <div class="relative">
+            <select class="appearance-none bg-white border border-gray-200 rounded-full px-4 py-1 text-sm font-bold text-gray-600 outline-none pr-8">
+                <option>EU</option>
+                <option>ES</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+            </div>
         </div>
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Pasahitza" data-es="Contraseña">Pasahitza</label> <input type="password" id="login-password" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="••••••••">
+    </header>
+
+    <main class="flex flex-col items-center justify-center pt-10 px-4">
+        <div class="w-full max-w-[440px] bg-white rounded-[2rem] p-10 login-card border border-gray-50/50">
+            <div class="flex justify-center mb-6">
+                <div class="bg-emerald-50 p-4 rounded-full">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-extrabold text-gray-800">Ongi etorri!</h2>
+                <p class="text-gray-400 text-sm mt-1">Sartu zure datuak</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 ml-1">Posta elektronikoa</label>
+                    <input type="email" id="email" required 
+                        class="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all placeholder:text-gray-300" 
+                        placeholder="familia@email.com">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2 ml-1">Pasahitza</label>
+                    <input type="password" id="password" required 
+                        class="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                        placeholder="��������">
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-[#047857] hover:bg-emerald-800 text-white font-bold rounded-2xl shadow-lg shadow-emerald-900/10 transition-all transform active:scale-[0.98]">
+                    Sartu
+                </button>
+            </form>
+
+            <div class="mt-10 text-center">
+                <p class="text-xs font-bold text-gray-400 mb-3">Monitorea zara?</p>
+                <button class="w-full py-4 bg-[#f1f5f9] hover:bg-gray-200 text-gray-600 font-bold rounded-2xl transition-all">
+                    Monitoreen sarrera
+                </button>
+            </div>
         </div>
-        <div id="login-error" class="hidden text-red-600 text-sm text-center bg-red-50 p-2 rounded-lg"></div><button type="submit" id="login-btn" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition btn-primary"> <span data-eu="Sartu" data-es="Entrar">Sartu</span> </button>
-       </form>
-       <div class="mt-6 pt-6 border-t border-gray-100">
-        <p class="text-center text-sm text-gray-500 mb-3" data-eu="Monitorea zara?" data-es="¿Eres monitor/a?">Monitorea zara?</p><button onclick="showMonitorLogin()" class="w-full py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition"> <span data-eu="Monitoreen sarrera" data-es="Acceso monitores">Monitoreen sarrera</span> </button>
-       </div>
-      </div>
-     </div>
-    </div><!-- Monitor Login -->
-    <div id="monitor-login-screen" class="hidden fade-in">
-     <div class="max-w-md mx-auto">
-      <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-       <button onclick="showMainLogin()" class="flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-4">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg><span data-eu="Atzera" data-es="Atrás">Atzera</span> </button>
-       <div class="text-center mb-6">
-        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-         <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-         </svg>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-800" data-eu="Monitoreen sarrera" data-es="Acceso monitores">Monitoreen sarrera</h2>
-       </div>
-       <form onsubmit="handleMonitorLogin(event)" class="space-y-4">
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Monitore kodea" data-es="Código monitor">Monitore kodea</label> <input type="password" id="monitor-code" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 transition" placeholder="••••••••">
-        </div>
-        <div id="monitor-login-error" class="hidden text-red-600 text-sm text-center bg-red-50 p-2 rounded-lg"></div><button type="submit" class="w-full py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition btn-primary"> <span data-eu="Sartu" data-es="Entrar">Sartu</span> </button>
-       </form>
-       <p class="text-xs text-gray-400 text-center mt-4" data-eu="Kodea sekretua da" data-es="El código es secreto">Kodea sekretua da</p>
-      </div>
-     </div>
-    </div><!-- Family Dashboard -->
-    <div id="family-dashboard" class="hidden fade-in">
-     <div class="mb-6">
-      <h2 id="family-student-name" class="text-2xl font-bold text-gray-800"></h2>
-      <p class="text-gray-500" data-eu="Asteko jantoki informazioa" data-es="Información semanal del comedor">Asteko jantoki informazioa</p>
-     </div><!-- Week Navigation -->
-     <div class="flex items-center justify-between mb-6 bg-white rounded-xl p-4 shadow">
-      <button onclick="changeWeek(-1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
-       <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-       </svg></button>
-      <div class="text-center">
-       <p id="current-week-display" class="font-bold text-lg text-emerald-700"></p>
-       <p class="text-sm text-gray-500" data-eu="Astea" data-es="Semana">Astea</p>
-      </div><button onclick="changeWeek(1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
-       <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-       </svg></button>
-     </div><!-- Meals Grid -->
-     <div id="family-meals-grid" class="grid gap-4">
-      <!-- Meals will be rendered here -->
-     </div>
-     <div id="no-meals-message" class="hidden text-center py-12 bg-white rounded-xl">
-      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-       <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-       </svg>
-      </div>
-      <p class="text-gray-500" data-eu="Ez dago informaziorik aste honetarako" data-es="No hay información para esta semana">Ez dago informaziorik aste honetarako</p>
-     </div>
-    </div><!-- Monitor Dashboard -->
-    <div id="monitor-dashboard" class="hidden fade-in">
-     <!-- Admin Menu Tabs -->
-     <div id="admin-menu" class="hidden mb-6 flex gap-2 bg-white rounded-xl shadow p-2">
-      <button onclick="switchAdminPanel('students')" id="tab-students" class="flex-1 px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg transition"> <span data-eu="Ikasleen kudeaketa" data-es="Gestión de estudiantes">Ikasleen kudeaketa</span> </button> <button onclick="switchAdminPanel('meals')" id="tab-meals" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Asteko menuak" data-es="Menús de la semana">Asteko menuak</span> </button>
-     </div><!-- Students by Class Level -->
-     <div id="students-panel">
-      <div class="flex items-center justify-between mb-6">
-       <h2 class="text-xl font-bold text-gray-800" data-eu="Ikasleen kudeaketa" data-es="Gestión de estudiantes">Ikasleen kudeaketa</h2><button onclick="showAddStudentForm()" class="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition btn-primary">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg><span data-eu="Gehitu" data-es="Añadir">Gehitu</span> </button>
-      </div><!-- Add Student Form -->
-      <div id="add-student-form" class="hidden bg-white rounded-xl shadow-lg p-6 mb-4 border-2 border-emerald-200">
-       <h3 class="font-bold text-lg mb-4 text-emerald-700" data-eu="Ikasle berria" data-es="Nuevo estudiante">Ikasle berria</h3>
-       <form onsubmit="addStudent(event)" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Izena" data-es="Nombre">Izena</label> <input type="text" id="new-student-name" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-         </div>
-         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Abizena" data-es="Apellidos">Abizena</label> <input type="text" id="new-student-surname" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-         </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Mailak" data-es="Clase">Mailak</label> <select id="new-student-class" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500"> <option value="" data-eu="Aukeratu" data-es="Seleccionar">Aukeratu</option> <option value="HH2urte">HH 2 urte</option> <option value="HH3urte">HH 3 urte</option> </select>
-         </div>
-         <div></div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila (1)" data-es="Email de la familia (1)">Familiaren emaila (1)</label> <input type="email" id="new-student-email" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-         </div>
-         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Pasahitza" data-es="Contraseña">Pasahitza</label> <input type="text" id="new-student-password" required class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-         </div>
-        </div>
-        <div><label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Familiaren emaila (2) - aukerazkoa" data-es="Email de la familia (2) - opcional">Familiaren emaila (2) - aukerazkoa</label> <input type="email" id="new-student-email-2" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-        </div>
-        <div class="flex gap-2 justify-end">
-         <button type="button" onclick="hideAddStudentForm()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Utzi" data-es="Cancelar">Utzi</span> </button> <button type="submit" class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"> <span data-eu="Gorde" data-es="Guardar">Gorde</span> </button>
-        </div>
-       </form>
-      </div><!-- Students by Class -->
-      <div id="class-groups" class="space-y-6">
-       <!-- Class sections will be rendered here -->
-      </div>
-      <div id="no-students-message" class="hidden text-center py-12 bg-white rounded-xl">
-       <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-       </div>
-       <p class="text-gray-500" data-eu="Ez dago ikaslerik erregistratuta" data-es="No hay estudiantes registrados">Ez dago ikaslerik erregistratuta</p>
-      </div>
-     </div><!-- Admin Meals Management Panel -->
-     <div id="meals-panel" class="hidden">
-      <div class="mb-6">
-       <h2 class="text-2xl font-bold text-gray-800 mb-2" data-eu="Asteko menuak" data-es="Menús de la semana">Asteko menuak</h2>
-       <p class="text-gray-500" data-eu="Sartu otordua egunero" data-es="Introduce comidas cada día">Sartu otordua egunero</p>
-      </div><!-- Week Navigation -->
-      <div class="flex items-center justify-between mb-6 bg-white rounded-xl p-4 shadow">
-       <button onclick="changeWeekAdmin(-1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
-        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg></button>
-       <div class="text-center">
-        <p id="admin-week-display" class="font-bold text-lg text-emerald-700"></p>
-        <p class="text-sm text-gray-500" data-eu="Astea" data-es="Semana">Astea</p>
-       </div><button onclick="changeWeekAdmin(1)" class="p-2 hover:bg-gray-100 rounded-lg transition">
-        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg></button>
-      </div><!-- Days Grid for Menu Entry -->
-      <div id="admin-meals-grid" class="space-y-6">
-       <!-- Day sections will be rendered here -->
-      </div>
-     </div><!-- Meal Edit Modal for Records -->
-     <div id="records-edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
-       <div class="bg-emerald-600 text-white px-6 py-4 flex items-center justify-between sticky top-0">
-        <h3 class="font-bold text-lg" data-eu="Editatu otordua" data-es="Editar comida">Editatu otordua</h3><button onclick="closeRecordsEditModal()" class="text-white hover:bg-emerald-700 p-1 rounded">
-         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-         </svg></button>
-       </div>
-       <div class="p-6 space-y-4">
-        <div id="edit-modal-info" class="text-sm text-gray-600"></div>
-        <form id="records-edit-form" onsubmit="saveRecordMeal(event)" class="space-y-4">
-         <div class="grid grid-cols-2 gap-4">
-          <div>
-           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
-           <div id="edit-first-display" class="text-gray-700 font-medium mb-2"></div>
-           <div class="flex gap-1">
-            <button type="button" onclick="setEditRecordAmount('first', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="first">🌟</button> <button type="button" onclick="setEditRecordAmount('first', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="first">😊</button> <button type="button" onclick="setEditRecordAmount('first', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="first">😐</button> <button type="button" onclick="setEditRecordAmount('first', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="first">😕</button>
-           </div><input type="hidden" id="edit-record-first-amount" value="">
-          </div>
-          <div>
-           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
-           <div id="edit-second-display" class="text-gray-700 font-medium mb-2"></div>
-           <div class="flex gap-1">
-            <button type="button" onclick="setEditRecordAmount('second', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="second">🌟</button> <button type="button" onclick="setEditRecordAmount('second', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="second">😊</button> <button type="button" onclick="setEditRecordAmount('second', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="second">😐</button> <button type="button" onclick="setEditRecordAmount('second', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="second">😕</button>
-           </div><input type="hidden" id="edit-record-second-amount" value="">
-          </div>
-         </div>
-         <div class="grid grid-cols-2 gap-4">
-          <div>
-           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Postrea" data-es="Postre">Postrea</label>
-           <div id="edit-dessert-display" class="text-gray-700 font-medium mb-2"></div>
-           <div class="flex gap-1">
-            <button type="button" onclick="setEditRecordAmount('dessert', 'all')" class="flex-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded hover:bg-emerald-200 transition" data-amount="all" data-field="dessert">🌟</button> <button type="button" onclick="setEditRecordAmount('dessert', 'half')" class="flex-1 px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded hover:bg-yellow-200 transition" data-amount="half" data-field="dessert">😊</button> <button type="button" onclick="setEditRecordAmount('dessert', 'little')" class="flex-1 px-2 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded hover:bg-orange-200 transition" data-amount="little" data-field="dessert">😐</button> <button type="button" onclick="setEditRecordAmount('dessert', 'nothing')" class="flex-1 px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded hover:bg-red-200 transition" data-amount="nothing" data-field="dessert">😕</button>
-           </div><input type="hidden" id="edit-record-dessert-amount" value="">
-          </div>
-          <div>
-           <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Oharrak" data-es="Notas">Oharrak</label> <textarea id="edit-record-notes" rows="2" class="w-full px-2 py-1 border border-gray-200 rounded text-sm focus:ring-2 focus:ring-emerald-500"></textarea>
-          </div>
-         </div>
-         <div class="flex gap-2 justify-end pt-4 border-t border-gray-200">
-          <button type="button" onclick="closeRecordsEditModal()" class="px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition"> <span data-eu="Utzi" data-es="Cancelar">Utzi</span> </button> <button type="submit" class="px-4 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition"> <span data-eu="Gorde aldaketak" data-es="Guardar cambios">Gorde aldaketak</span> </button>
-         </div>
-        </form>
-       </div>
-      </div>
-     </div>
-     <div id="meals-panel-monitor" class="hidden">
-      <button onclick="backFromMeals()" class="flex items-center gap-1 text-gray-500 hover:text-gray-700 mb-4">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-       </svg><span data-eu="Atzera ikasleetara" data-es="Volver a estudiantes">Atzera ikasleetara</span> </button>
-      <div class="bg-white rounded-xl shadow p-4 mb-4">
-       <h2 id="meal-student-heading" class="text-xl font-bold text-gray-800 mb-4"></h2>
-       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-         <label class="block text-sm font-semibold text-gray-700 mb-1" data-eu="Data" data-es="Fecha">Data</label> <input type="date" id="meal-date" onchange="loadStudentMeals()" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500">
-        </div>
-       </div>
-      </div><!-- Meal Entry Form -->
-      <div id="meal-entry-form" class="hidden bg-white rounded-xl shadow-lg p-6 border-2 border-red-200">
-       <h3 class="font-bold text-lg mb-4 text-red-700" data-eu="Otordu erregistroa" data-es="Registro de comida">Otordu erregistroa</h3>
-       <p id="meal-form-subtitle" class="text-sm text-gray-500 mb-4"></p>
-       <form onsubmit="saveMeal(event)" class="space-y-6">
-        <!-- First Course -->
-        <div class="bg-emerald-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-emerald-700 mb-2" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
-         <p id="first-course-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
-         <div class="flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
-          <div class="flex gap-2 ml-auto">
-           <button type="button" onclick="selectAmount('first', 'all')" class="amount-btn px-3 py-1.5 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition" data-amount="all" data-field="first"> <span data-eu="Dena" data-es="Todo">Dena</span> 🌟 </button> <button type="button" onclick="selectAmount('first', 'half')" class="amount-btn px-3 py-1.5 bg-yellow-500 text-white text-sm font-semibold rounded-lg hover:bg-yellow-600 transition" data-amount="half" data-field="first"> <span data-eu="Erdia" data-es="Mitad">Erdia</span> 😊 </button> <button type="button" onclick="selectAmount('first', 'little')" class="amount-btn px-3 py-1.5 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition" data-amount="little" data-field="first"> <span data-eu="Gutxi" data-es="Poco">Gutxi</span> 😐 </button> <button type="button" onclick="selectAmount('first', 'nothing')" class="amount-btn px-3 py-1.5 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition" data-amount="nothing" data-field="first"> <span data-eu="Ezer ez" data-es="Nada">Ezer ez</span> 😕 </button>
-          </div>
-         </div><input type="hidden" id="first-course-amount" value="">
-        </div><!-- Second Course -->
-        <div class="bg-red-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-red-700 mb-2" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
-         <p id="second-course-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
-         <div class="flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
-          <div class="flex gap-2 ml-auto">
-           <button type="button" onclick="selectAmount('second', 'all')" class="amount-btn px-3 py-1.5 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition" data-amount="all" data-field="second"> <span data-eu="Dena" data-es="Todo">Dena</span> 🌟 </button> <button type="button" onclick="selectAmount('second', 'half')" class="amount-btn px-3 py-1.5 bg-yellow-500 text-white text-sm font-semibold rounded-lg hover:bg-yellow-600 transition" data-amount="half" data-field="second"> <span data-eu="Erdia" data-es="Mitad">Erdia</span> 😊 </button> <button type="button" onclick="selectAmount('second', 'little')" class="amount-btn px-3 py-1.5 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition" data-amount="little" data-field="second"> <span data-eu="Gutxi" data-es="Poco">Gutxi</span> 😐 </button> <button type="button" onclick="selectAmount('second', 'nothing')" class="amount-btn px-3 py-1.5 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition" data-amount="nothing" data-field="second"> <span data-eu="Ezer ez" data-es="Nada">Ezer ez</span> 😕 </button>
-          </div>
-         </div><input type="hidden" id="second-course-amount" value="">
-        </div><!-- Dessert -->
-        <div class="bg-amber-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-amber-700 mb-2" data-eu="Postrea" data-es="Postre">Postrea</label>
-         <p id="dessert-display" class="text-lg font-semibold text-gray-800 mb-3"></p>
-         <div class="flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600" data-eu="Zenbat jan du?" data-es="¿Cuánto ha comido?">Zenbat jan du?</span>
-          <div class="flex gap-2 ml-auto">
-           <button type="button" onclick="selectAmount('dessert', 'all')" class="amount-btn px-3 py-1.5 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition" data-amount="all" data-field="dessert"> <span data-eu="Dena" data-es="Todo">Dena</span> 🌟 </button> <button type="button" onclick="selectAmount('dessert', 'half')" class="amount-btn px-3 py-1.5 bg-yellow-500 text-white text-sm font-semibold rounded-lg hover:bg-yellow-600 transition" data-amount="half" data-field="dessert"> <span data-eu="Erdia" data-es="Mitad">Erdia</span> 😊 </button> <button type="button" onclick="selectAmount('dessert', 'little')" class="amount-btn px-3 py-1.5 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition" data-amount="little" data-field="dessert"> <span data-eu="Gutxi" data-es="Poco">Gutxi</span> 😐 </button> <button type="button" onclick="selectAmount('dessert', 'nothing')" class="amount-btn px-3 py-1.5 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition" data-amount="nothing" data-field="dessert"> <span data-eu="Ezer ez" data-es="Nada">Ezer ez</span> 😕 </button>
-          </div>
-         </div><input type="hidden" id="dessert-amount" value="">
-        </div><!-- Lokoluxka -->
-        <div class="bg-blue-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-blue-700 mb-2" data-eu="Lokoluxka" data-es="Chocolate caliente">Lokoluxka</label>
-         <div class="flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600" data-eu="Hartu du?" data-es="¿Ha tomado?">Hartu du?</span>
-          <div class="flex gap-2 ml-auto">
-           <button type="button" onclick="selectAmount('lokoluxka', 'yes')" class="amount-btn px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition" data-amount="yes" data-field="lokoluxka"> <span data-eu="Bai" data-es="Sí">Bai</span> ✅ </button> <button type="button" onclick="selectAmount('lokoluxka', 'no')" class="amount-btn px-4 py-2 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition" data-amount="no" data-field="lokoluxka"> <span data-eu="Ez" data-es="No">Ez</span> ❌ </button>
-          </div>
-         </div><input type="hidden" id="lokoluxka-amount" value="">
-        </div><!-- Pixa -->
-        <div class="bg-purple-50 rounded-xl p-4">
-         <label class="block text-sm font-bold text-purple-700 mb-2" data-eu="Pixa" data-es="Bebida">Pixa</label>
-         <div class="flex flex-wrap gap-2">
-          <span class="text-sm text-gray-600" data-eu="Egin du?" data-es="¿Ha hecho?">Egin du?</span>
-          <div class="flex gap-2 ml-auto">
-           <button type="button" onclick="selectAmount('pixa', 'yes')" class="amount-btn px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition" data-amount="yes" data-field="pixa"> <span data-eu="Bai" data-es="Sí">Bai</span> ✅ </button> <button type="button" onclick="selectAmount('pixa', 'no')" class="amount-btn px-4 py-2 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition" data-amount="no" data-field="pixa"> <span data-eu="Ez" data-es="No">Ez</span> ❌ </button>
-          </div>
-         </div><input type="hidden" id="pixa-amount" value="">
-        </div>
-        <div>
-         <label class="block text-sm font-bold text-gray-700 mb-2" data-eu="Oharrak (aukerazkoa)" data-es="Notas (opcional)">Oharrak (aukerazkoa)</label> <textarea id="meal-notes" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="..."></textarea>
-        </div>
-        <div class="flex gap-2 justify-end">
-         <button type="submit" id="save-meal-btn" class="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition btn-primary"> <span data-eu="Gorde otordua" data-es="Guardar comida">Gorde otordua</span> </button>
-        </div>
-       </form>
-      </div>
-      <div id="select-student-message" class="text-center py-12 bg-white rounded-xl">
-       <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-       </div>
-       <p class="text-gray-500" data-eu="Aukeratu data bat" data-es="Selecciona una fecha">Aukeratu data bat</p>
-      </div>
-     </div>
-    </div>
-   </main><!-- Toast Notification -->
-   <div id="toast" class="fixed bottom-4 right-4 hidden">
-    <div class="bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
-     <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-     </svg><span id="toast-message"></span>
-    </div>
-   </div>
-  </div>
-  <script>
-    // =====================
-    // STATE & CONFIGURATION
-    // =====================
-    let currentLang = 'eu';
-    let currentUser = null;
-    let allData = [];
-    let students = [];
-    let meals = [];
-    let currentWeekOffset = 0;
-    let adminWeekOffset = 0;
-    let editingMealId = null;
-    let selectedStudentForMeals = null;
+    </main>
+
+  <script type="module">
+  // 1. Importamos la conexión desde tu archivo central
+  import { db } from './firebase-config.js';
+  import { ref, get, child } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+  const loginForm = document.getElementById('login-form');
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const emailInput = document.getElementById('email').value;
+    const passInput = document.getElementById('password').value;
+
+    const dbRef = ref(db);
     
-    const MONITOR_CODE = 'landaberri2024';
+    try {
+      // 2. Consultamos la carpeta 'ikasleak' en tu Firebase
+      const snapshot = await get(child(dbRef, 'ikasleak'));
+      
+      let accesoConcedido = false;
 
-    const defaultConfig = {
-      school_name: 'Landaberri Ikastola',
-      welcome_message: 'Ongi etorri jantoki kudeatzailera',
-      primary_color: '#047857',
-      secondary_color: '#DC2626',
-      background_color: '#f0fdf4',
-      text_color: '#1f2937',
-      accent_color: '#ffffff'
-    };
-
-    // =====================
-    // SDK INITIALIZATION
-    // =====================
-    const dataHandler = {
-      onDataChanged(data) {
-        allData = data;
-        students = data.filter(d => d.type === 'student');
-        meals = data.filter(d => d.type === 'meal');
-        
-        if (currentUser) {
-          if (currentUser.type === 'family') {
-            renderFamilyMeals();
-          } else if (currentUser.type === 'monitor') {
-            if (currentUser.isAdmin) {
-              renderStudentsByClass();
-              renderAdminMealsPanel();
-            } else {
-              renderStudentsByClass();
-            }
+      // 3. Verificamos si los datos coinciden con algún alumno registrado
+      if (snapshot.exists()) {
+        const usuarios = snapshot.val();
+        Object.values(usuarios).forEach(user => {
+          if (user.email === emailInput && user.pasahitza === passInput) {
+            accesoConcedido = true;
           }
-        }
-      }
-    };
-
-  async function initializeApp() {
-      console.log("Iniciando app...");
-      try {
-        // Inicializamos nuestro SDK local
-        if (window.element_sdk) {
-            await element_sdk.init();
-        }
-        
-        // Cargamos los datos
-        await loadStudents();
-        
-        // FORZAMOS OCULTAR EL CARGANDO
-        document.getElementById('loading-screen').classList.add('hidden');
-        document.getElementById('login-screen').classList.remove('hidden');
-      } catch (error) {
-        console.error('Error al iniciar:', error);
-        document.getElementById('loading-screen').classList.add('hidden');
-      }
-    }
-
-    initApp();
-
-    // =====================
-    // LANGUAGE FUNCTIONS
-    // =====================
-    function toggleLanguage() {
-      currentLang = currentLang === 'eu' ? 'es' : 'eu';
-      document.getElementById('current-lang').textContent = currentLang.toUpperCase();
-      document.documentElement.lang = currentLang;
-      
-      document.querySelectorAll('[data-eu][data-es]').forEach(el => {
-        el.textContent = el.getAttribute(`data-${currentLang}`);
-      });
-      
-      document.querySelectorAll('option[data-eu][data-es]').forEach(opt => {
-        opt.textContent = opt.getAttribute(`data-${currentLang}`);
-      });
-    }
-
-    function t(eu, es) {
-      return currentLang === 'eu' ? eu : es;
-    }
-
-    // =====================
-    // NAVIGATION & AUTH
-    // =====================
-    function showScreen(screenId) {
-      ['login-screen', 'monitor-login-screen', 'family-dashboard', 'monitor-dashboard'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-      });
-      document.getElementById(screenId).classList.remove('hidden');
-    }
-
-    function showMainLogin() {
-      showScreen('login-screen');
-    }
-
-    function showMonitorLogin() {
-      showScreen('monitor-login-screen');
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim().toLowerCase();
-      const password = document.getElementById('login-password').value;
-      
-      if (email === 'jangela@landaberrikastola.org' && password === 'admin2024') {
-        currentUser = { type: 'monitor', isAdmin: true, email: email };
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('admin-menu').classList.remove('hidden');
-        showScreen('monitor-dashboard');
-        renderStudentsByClass();
-        renderAdminMealsPanel();
-        document.getElementById('login-error').classList.add('hidden');
-        return;
-      }
-      
-      const student = students.find(s => 
-        (s.family_email && s.family_email.toLowerCase() === email ||
-         s.family_email_2 && s.family_email_2.toLowerCase() === email) && 
-        s.password === password
-      );
-      
-      if (student) {
-        currentUser = { type: 'family', studentId: student.student_id, email: email };
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('family-student-name').textContent = `${student.student_name} ${student.student_surname}`;
-        showScreen('family-dashboard');
-        renderFamilyMeals();
-        document.getElementById('login-error').classList.add('hidden');
-      } else {
-        const errorEl = document.getElementById('login-error');
-        errorEl.textContent = t('Email edo pasahitza okerra', 'Email o contraseña incorrectos');
-        errorEl.classList.remove('hidden');
-      }
-    }
-
-    function handleMonitorLogin(e) {
-      e.preventDefault();
-      const code = document.getElementById('monitor-code').value;
-      
-      if (code === MONITOR_CODE) {
-        currentUser = { type: 'monitor', isAdmin: false };
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('admin-menu').classList.add('hidden');
-        showScreen('monitor-dashboard');
-        renderStudentsByClass();
-        // Show students panel and hide meals panel for non-admin monitors
-        document.getElementById('students-panel').classList.remove('hidden');
-        document.getElementById('meals-panel').classList.add('hidden');
-        document.getElementById('meals-panel-monitor').classList.add('hidden');
-        document.getElementById('monitor-login-error').classList.add('hidden');
-      } else {
-        const errorEl = document.getElementById('monitor-login-error');
-        errorEl.textContent = t('Kode okerra', 'Código incorrecto');
-        errorEl.classList.remove('hidden');
-      }
-    }
-
-    function logout() {
-      currentUser = null;
-      document.getElementById('logout-btn').classList.add('hidden');
-      document.getElementById('login-email').value = '';
-      document.getElementById('login-password').value = '';
-      document.getElementById('monitor-code').value = '';
-      showScreen('login-screen');
-    }
-
-    // =====================
-    // ADMIN PANEL SWITCHING
-    // =====================
-    function switchAdminPanel(panel) {
-      if (panel === 'students') {
-        document.getElementById('students-panel').classList.remove('hidden');
-        document.getElementById('meals-panel').classList.add('hidden');
-        document.getElementById('tab-students').classList.add('bg-emerald-600', 'text-white');
-        document.getElementById('tab-students').classList.remove('bg-gray-100', 'text-gray-700');
-        document.getElementById('tab-meals').classList.remove('bg-emerald-600', 'text-white');
-        document.getElementById('tab-meals').classList.add('bg-gray-100', 'text-gray-700');
-      } else if (panel === 'meals') {
-        document.getElementById('students-panel').classList.add('hidden');
-        document.getElementById('meals-panel').classList.remove('hidden');
-        document.getElementById('tab-meals').classList.add('bg-emerald-600', 'text-white');
-        document.getElementById('tab-meals').classList.remove('bg-gray-100', 'text-gray-700');
-        document.getElementById('tab-students').classList.remove('bg-emerald-600', 'text-white');
-        document.getElementById('tab-students').classList.add('bg-gray-100', 'text-gray-700');
-        updateAdminWeekDisplay();
-      }
-    }
-
-    // =====================
-    // ADMIN MEALS FUNCTIONS
-    // =====================
-    function getWeekDatesAdmin(offset = 0) {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + (offset * 7));
-      
-      const dates = [];
-      for (let i = 0; i < 5; i++) {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        dates.push(d.toISOString().split('T')[0]);
-      }
-      return dates;
-    }
-
-    function updateAdminWeekDisplay() {
-      const dates = getWeekDatesAdmin(adminWeekOffset);
-      const start = new Date(dates[0]);
-      const end = new Date(dates[4]);
-      const months = currentLang === 'eu'
-        ? ['Urtarila', 'Otsaila', 'Martxoa', 'Apirila', 'Maiatza', 'Ekaina', 'Uztaila', 'Abuztua', 'Iraila', 'Urria', 'Azaroa', 'Abendua']
-        : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      
-      document.getElementById('admin-week-display').textContent = 
-        `${start.getDate()} - ${end.getDate()} ${months[end.getMonth()]}`;
-    }
-
-    function changeWeekAdmin(direction) {
-      adminWeekOffset += direction;
-      updateAdminWeekDisplay();
-      renderAdminMealsPanel();
-    }
-
-    function renderAdminMealsPanel() {
-      const container = document.getElementById('admin-meals-grid');
-      container.innerHTML = '';
-      
-      const weekDates = getWeekDatesAdmin(adminWeekOffset);
-      
-      weekDates.forEach(date => {
-        const dayOfWeek = new Date(date).getDay();
-        if (dayOfWeek === 0 || dayOfWeek === 6) return; // Skip weekends
-        
-        const dayMeal = meals.find(m => m.date === date);
-        
-        const dayCard = document.createElement('div');
-        dayCard.className = 'bg-white rounded-xl shadow-lg p-6';
-        dayCard.innerHTML = `
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-gray-800">${formatDate(date)}</h3>
-          </div>
-          <div class="space-y-4">
-            <div class="bg-emerald-50 p-4 rounded-lg">
-              <label class="block text-sm font-bold text-emerald-700 mb-2" data-eu="Lehen platera" data-es="Primer plato">Lehen platera</label>
-              <input type="text" class="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500" placeholder="Ej: Arroz con verduras" value="${dayMeal?.first_course || ''}" onchange="saveAdminMeal('${date}', 'first_course', this.value)">
-            </div>
-            <div class="bg-red-50 p-4 rounded-lg">
-              <label class="block text-sm font-bold text-red-700 mb-2" data-eu="Bigarren platera" data-es="Segundo plato">Bigarren platera</label>
-              <input type="text" class="w-full px-3 py-2 border border-red-200 rounded-lg focus:ring-2 focus:ring-red-500" placeholder="Ej: Pollo con patatas" value="${dayMeal?.second_course || ''}" onchange="saveAdminMeal('${date}', 'second_course', this.value)">
-            </div>
-            <div class="bg-amber-50 p-4 rounded-lg">
-              <label class="block text-sm font-bold text-amber-700 mb-2" data-eu="Postrea" data-es="Postre">Postrea</label>
-              <input type="text" class="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Ej: Fruta / Yogur" value="${dayMeal?.dessert || ''}" onchange="saveAdminMeal('${date}', 'dessert', this.value)">
-            </div>
-          </div>
-        `;
-        
-        container.appendChild(dayCard);
-      });
-    }
-
-    async function saveAdminMeal(date, field, value) {
-      const existingMeal = meals.find(m => m.date === date && !m.student_id);
-      
-      const mealData = {
-        type: 'meal',
-        student_id: '',
-        date: date,
-        first_course: field === 'first_course' ? value : (existingMeal?.first_course || ''),
-        first_course_amount: existingMeal?.first_course_amount || '',
-        second_course: field === 'second_course' ? value : (existingMeal?.second_course || ''),
-        second_course_amount: existingMeal?.second_course_amount || '',
-        dessert: field === 'dessert' ? value : (existingMeal?.dessert || ''),
-        dessert_amount: existingMeal?.dessert_amount || '',
-        lokoluxka: '',
-        lokoluxka_amount: '',
-        pixa: '',
-        pixa_amount: '',
-        notes: existingMeal?.notes || '',
-        created_at: new Date().toISOString(),
-        email_sent: false
-      };
-
-      if (existingMeal && existingMeal.__backendId) {
-        await window.dataSdk.update({ ...existingMeal, ...mealData });
-      } else {
-        if (meals.length >= 999) {
-          showToast(t('Gehienezko erregistro kopurura iritsi zara', 'Has alcanzado el límite máximo de registros'));
-          return;
-        }
-        await window.dataSdk.create(mealData);
-      }
-    }
-
-    // =====================
-    // MONITOR FUNCTIONS - STUDENTS
-    // =====================
-    function renderStudentsByClass() {
-      const container = document.getElementById('class-groups');
-      const noStudentsMsg = document.getElementById('no-students-message');
-      
-      if (students.length === 0) {
-        container.innerHTML = '';
-        noStudentsMsg.classList.remove('hidden');
-        return;
-      }
-      
-      noStudentsMsg.classList.add('hidden');
-      container.innerHTML = '';
-      
-      // Group students by class
-      const classLevels = ['HH2urte', 'HH3urte'];
-      
-      classLevels.forEach(classLevel => {
-        const classStudents = students.filter(s => s.class_level === classLevel);
-        
-        if (classStudents.length === 0) return;
-        
-        const classSection = document.createElement('div');
-        classSection.className = 'bg-white rounded-xl shadow-md overflow-hidden';
-        
-        const classLabel = classLevel === 'HH2urte' ? 'HH 2 urte' : 'HH 3 urte';
-        const classColor = classLevel === 'HH2urte' ? 'emerald' : 'blue';
-        
-        classSection.innerHTML = `
-          <div class="bg-${classColor}-100 px-4 py-3 border-b border-${classColor}-200">
-            <h3 class="font-bold text-${classColor}-800">${classLabel}</h3>
-          </div>
-          <div class="divide-y" data-class-level="${classLevel}">
-            <!-- Students will be added here -->
-          </div>
-        `;
-        
-        const studentsList = classSection.querySelector('[data-class-level]');
-        classStudents.forEach(student => {
-          studentsList.appendChild(createStudentCard(student));
         });
-        
-        container.appendChild(classSection);
-      });
-    }
-
-    function createStudentCard(student) {
-      const card = document.createElement('div');
-      card.className = 'p-4 hover:bg-gray-50 cursor-pointer transition flex items-center justify-between';
-      card.dataset.studentId = student.student_id;
-      
-      // Both monitors and admins can click to open meal entry
-      card.onclick = () => openMealsForStudent(student);
-      
-      card.innerHTML = `
-        <div class="flex items-center gap-3 flex-1">
-          <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-            <span class="text-xl">👶</span>
-          </div>
-          <div>
-            <h3 class="font-bold text-gray-800">${student.student_name} ${student.student_surname}</h3>
-            <p class="text-sm text-gray-500">${student.family_email}</p>
-          </div>
-        </div>
-        ${currentUser && currentUser.isAdmin ? `
-          <div class="flex gap-2" data-student-id="${student.student_id}">
-            <button onclick="event.stopPropagation(); editStudent(this)" class="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="${t('Editatu', 'Editar')}">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </button>
-            <button id="delete-btn-${student.student_id}" onclick="event.stopPropagation(); confirmDeleteStudent('${student.student_id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="${t('Ezabatu', 'Eliminar')}">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </div>
-        ` : ''}
-      `;
-      
-      return card;
-    }
-
-    function openMealsForStudent(student) {
-      selectedStudentForMeals = student;
-      document.getElementById('meal-student-heading').textContent = `${student.student_name} ${student.student_surname}`;
-      document.getElementById('meal-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('students-panel').classList.add('hidden');
-      document.getElementById('meals-panel-monitor').classList.remove('hidden');
-      loadStudentMeals();
-    }
-
-    function backFromMeals() {
-      selectedStudentForMeals = null;
-      document.getElementById('students-panel').classList.remove('hidden');
-      document.getElementById('meals-panel-monitor').classList.add('hidden');
-    }
-
-    function showAddStudentForm() {
-      if (!currentUser || !currentUser.isAdmin) {
-        showToast(t('Soilik administratzaileak ikasle berriak sortu dezakete', 'Solo los administradores pueden crear estudiantes'));
-        return;
       }
-      document.getElementById('add-student-form').classList.remove('hidden');
-    }
 
-    function hideAddStudentForm() {
-      document.getElementById('add-student-form').classList.add('hidden');
-      document.getElementById('add-student-form').dataset.editing = 'false';
-      document.getElementById('new-student-name').value = '';
-      document.getElementById('new-student-surname').value = '';
-      document.getElementById('new-student-class').value = '';
-      document.getElementById('new-student-email').value = '';
-      document.getElementById('new-student-email-2').value = '';
-      document.getElementById('new-student-password').value = '';
-      
-      document.querySelector('#add-student-form h3').textContent = t('Ikasle berria', 'Nuevo estudiante');
-      document.querySelector('#add-student-form button[type="submit"]').innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
-    }
-
-    function editStudent(btn) {
-      const card = btn.closest('[data-student-id]');
-      const studentId = card.dataset.studentId;
-      const student = students.find(s => s.student_id === studentId);
-      
-      if (!student) {
-        showToast(t('Errorea: ikaslea ez da aurkitu', 'Error: estudiante no encontrado'));
-        return;
-      }
-      
-      document.getElementById('new-student-name').value = student.student_name || '';
-      document.getElementById('new-student-surname').value = student.student_surname || '';
-      document.getElementById('new-student-class').value = student.class_level || '';
-      document.getElementById('new-student-email').value = student.family_email || '';
-      document.getElementById('new-student-email-2').value = student.family_email_2 || '';
-      document.getElementById('new-student-password').value = student.password || '';
-      
-      const form = document.getElementById('add-student-form');
-      form.dataset.editing = 'true';
-      form.dataset.studentId = studentId;
-      
-      document.querySelector('#add-student-form h3').textContent = t('Editatu ikaslea', 'Editar estudiante');
-      document.querySelector('#add-student-form button[type="submit"]').innerHTML = `<span data-eu="Eguneratu" data-es="Actualizar">${t('Eguneratu', 'Actualizar')}</span>`;
-      
-      document.getElementById('add-student-form').classList.remove('hidden');
-      document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
-    }
-
- async function addStudent(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true;
-
-  try {
-    const studentData = {
-      type: 'student',
-      student_id: 'STU-' + Date.now(),
-      student_name: document.getElementById('new-student-name').value.trim(),
-      student_surname: document.getElementById('new-student-surname').value.trim(),
-      class_level: document.getElementById('new-student-class').value,
-      family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
-      password: document.getElementById('new-student-password').value,
-      created_at: new Date().toISOString()
-    };
-
-    // Llamamos al SDK
-    const result = await window.data_sdk.create('students', studentData);
-
-    // Si 'result' tiene algo, es que ha funcionado
-    if (result && result.id) {
-      showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
-      hideAddStudentForm();
-      await loadStudents(); // Refrescamos la lista
-    } else {
-      throw new Error("Error al guardar");
-    }
-  } catch (error) {
-    console.error(error);
-    showToast(t('Errorea ikaslea gehitzean', 'Error al añadir estudiante'));
-  } finally {
-    btn.disabled = false;
-  }
-}
-    async function deleteStudent(studentId) {
-      const fullRecord = allData.find(d => d.student_id === studentId && d.type === 'student');
-      
-      if (!fullRecord || !fullRecord.__backendId) {
-        showToast(t('Errorea: ikaslea ez da aurkitu', 'Error: estudiante no encontrado'));
-        return;
-      }
-      
-      const studentMeals = allData.filter(d => d.student_id === studentId && d.type === 'meal');
-      for (const meal of studentMeals) {
-        if (meal && meal.__backendId) {
-          await window.dataSdk.delete(meal);
-        }
-      }
-      
-      const result = await window.dataSdk.delete(fullRecord);
-      
-      if (result && result.isOk) {
-        showToast(t('Ikaslea eta bere otorduak ezabatu dira', 'Estudiante y sus comidas eliminadas'));
+      // 4. Permitimos entrar si los datos son correctos o si es el admin maestro
+      if (accesoConcedido || (emailInput === "admin@test.com" && passInput === "1234")) {
+        window.location.href = "ikasleak.html";
       } else {
-        showToast(t('Errorea ikaslea ezabatzean', 'Error al eliminar estudiante'));
+        alert("Erabiltzaile edo pasahitz okerra / Usuario o contraseña incorrectos");
       }
+    } catch (error) {
+      console.error("Error en el login:", error);
+      alert("Errorea konexioan / Error en la conexión con la base de datos");
     }
-
-    function loadStudentMeals() {
-      const date = document.getElementById('meal-date').value;
-      
-      if (!date || !selectedStudentForMeals) {
-        document.getElementById('meal-entry-form').classList.add('hidden');
-        document.getElementById('select-student-message').classList.remove('hidden');
-        return;
-      }
-      
-      document.getElementById('select-student-message').classList.add('hidden');
-      document.getElementById('meal-entry-form').classList.remove('hidden');
-      
-      document.getElementById('meal-form-subtitle').textContent = 
-        `${selectedStudentForMeals.student_name} ${selectedStudentForMeals.student_surname} - ${formatDate(date)}`;
-      
-      const existingMeal = meals.find(m => m.student_id === selectedStudentForMeals.student_id && m.date === date);
-      
-      // Load meal content from admin-saved meals
-      const adminMeal = meals.find(m => !m.student_id && m.date === date);
-      
-      document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
-      document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
-      document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
-      
-      if (existingMeal) {
-        editingMealId = existingMeal.__backendId;
-        
-        document.getElementById('first-course-amount').value = existingMeal.first_course_amount || '';
-        document.getElementById('second-course-amount').value = existingMeal.second_course_amount || '';
-        document.getElementById('dessert-amount').value = existingMeal.dessert_amount || '';
-        document.getElementById('lokoluxka-amount').value = existingMeal.lokoluxka_amount || '';
-        document.getElementById('pixa-amount').value = existingMeal.pixa_amount || '';
-        document.getElementById('meal-notes').value = existingMeal.notes || '';
-        
-        updateAmountButtons('first', existingMeal.first_course_amount);
-        updateAmountButtons('second', existingMeal.second_course_amount);
-        updateAmountButtons('dessert', existingMeal.dessert_amount);
-        updateAmountButtons('lokoluxka', existingMeal.lokoluxka_amount);
-        updateAmountButtons('pixa', existingMeal.pixa_amount);
-      } else {
-        editingMealId = null;
-        clearMealForm();
-      }
-    }
-
-    function clearMealForm() {
-      document.getElementById('first-course-amount').value = '';
-      document.getElementById('second-course-amount').value = '';
-      document.getElementById('dessert-amount').value = '';
-      document.getElementById('lokoluxka-amount').value = '';
-      document.getElementById('pixa-amount').value = '';
-      document.getElementById('meal-notes').value = '';
-      
-      document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
-    }
-
-    function selectAmount(field, amount) {
-      const fieldId = field === 'dessert' ? 'dessert-amount' : (field === 'lokoluxka' || field === 'pixa' ? `${field}-amount` : `${field}-course-amount`);
-      document.getElementById(fieldId).value = amount;
-      updateAmountButtons(field, amount);
-    }
-
-    function updateAmountButtons(field, selectedAmount) {
-      document.querySelectorAll(`.amount-btn[data-field="${field}"]`).forEach(btn => {
-        btn.classList.toggle('selected', btn.dataset.amount === selectedAmount);
-      });
-    }
-
-    async function saveMeal(e) {
-      e.preventDefault();
-      
-      if (!selectedStudentForMeals) {
-        showToast(t('Errorea: ikaslea aukeratu gabe', 'Error: sin estudiante seleccionado'));
-        return;
-      }
-      
-      const date = document.getElementById('meal-date').value;
-      
-      const mealData = {
-        type: 'meal',
-        student_id: selectedStudentForMeals.student_id,
-        date: date,
-        first_course: '',
-        first_course_amount: document.getElementById('first-course-amount').value,
-        second_course: '',
-        second_course_amount: document.getElementById('second-course-amount').value,
-        dessert: '',
-        dessert_amount: document.getElementById('dessert-amount').value,
-        lokoluxka: '',
-        lokoluxka_amount: document.getElementById('lokoluxka-amount').value,
-        pixa: '',
-        pixa_amount: document.getElementById('pixa-amount').value,
-        notes: document.getElementById('meal-notes').value,
-        created_at: new Date().toISOString(),
-        email_sent: false
-      };
-      
-      const btn = document.getElementById('save-meal-btn');
-      btn.disabled = true;
-      btn.innerHTML = `<span class="animate-pulse">${t('Gordetzen...', 'Guardando...')}</span>`;
-      
-      let result;
-      if (editingMealId) {
-        const existingMeal = allData.find(d => d.__backendId === editingMealId);
-        if (existingMeal) {
-          result = await window.dataSdk.update({ ...existingMeal, ...mealData });
-        }
-      } else {
-        if (meals.length >= 999) {
-          showToast(t('Gehienezko erregistro kopurura iritsi zara', 'Has alcanzado el límite máximo de registros'));
-          btn.disabled = false;
-          btn.innerHTML = `<span data-eu="Gorde otordua" data-es="Guardar comida">${t('Gorde otordua', 'Guardar comida')}</span>`;
-          return;
-        }
-        result = await window.dataSdk.create(mealData);
-      }
-      
-      btn.disabled = false;
-      btn.innerHTML = `<span data-eu="Gorde otordua" data-es="Guardar comida">${t('Gorde otordua', 'Guardar comida')}</span>`;
-      
-      if (result && result.isOk) {
-        showToast(t('Otordua gorde da', 'Comida guardada'));
-      } else {
-        showToast(t('Errorea gordetzean', 'Error al guardar'));
-      }
-    }
-
-    // =====================
-    // FAMILY FUNCTIONS
-    // =====================
-    function getWeekDates(offset = 0) {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1) + (offset * 7));
-      
-      const dates = [];
-      for (let i = 0; i < 5; i++) {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        dates.push(d.toISOString().split('T')[0]);
-      }
-      return dates;
-    }
-
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      const days = currentLang === 'eu' 
-        ? ['Igandea', 'Astelehena', 'Asteartea', 'Asteazkena', 'Osteguna', 'Ostirala', 'Larunbata']
-        : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-      const months = currentLang === 'eu'
-        ? ['urt.', 'ots.', 'mar.', 'api.', 'mai.', 'eka.', 'uzt.', 'abu.', 'ira.', 'urr.', 'aza.', 'abe.']
-        : ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.'];
-      
-      return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]}`;
-    }
-
-    function updateCurrentWeekDisplay() {
-      const dates = getWeekDates(currentWeekOffset);
-      const start = new Date(dates[0]);
-      const end = new Date(dates[4]);
-      const months = currentLang === 'eu'
-        ? ['Urtarila', 'Otsaila', 'Martxoa', 'Apirila', 'Maiatza', 'Ekaina', 'Uztaila', 'Abuztua', 'Iraila', 'Urria', 'Azaroa', 'Abendua']
-        : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      
-      document.getElementById('current-week-display').textContent = 
-        `${start.getDate()} - ${end.getDate()} ${months[end.getMonth()]}`;
-    }
-
-    function changeWeek(direction) {
-      currentWeekOffset += direction;
-      updateCurrentWeekDisplay();
-      renderFamilyMeals();
-    }
-
-    function renderFamilyMeals() {
-      if (!currentUser || currentUser.type !== 'family') return;
-      
-      const container = document.getElementById('family-meals-grid');
-      const noMealsMsg = document.getElementById('no-meals-message');
-      const weekDates = getWeekDates(currentWeekOffset);
-      
-      const studentMeals = meals.filter(m => m.student_id === currentUser.studentId);
-      const weekMeals = weekDates.map(date => {
-        const meal = studentMeals.find(m => m.date === date);
-        const adminMeal = meals.find(m => !m.student_id && m.date === date);
-        return { date, meal, adminMeal };
-      });
-      
-      const hasMeals = weekMeals.some(wm => wm.meal || wm.adminMeal);
-      
-      if (!hasMeals) {
-        container.innerHTML = '';
-        noMealsMsg.classList.remove('hidden');
-        
-        weekMeals.forEach(({ date }) => {
-          const card = document.createElement('div');
-          card.className = 'bg-white rounded-xl shadow p-4 opacity-50';
-          card.innerHTML = `
-            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
-              <span class="text-2xl">📅</span>
-              <span class="font-bold text-gray-600">${formatDate(date)}</span>
-            </div>
-            <p class="text-gray-400 text-sm text-center py-4">${t('Ez dago informaziorik', 'Sin información')}</p>
-          `;
-          container.appendChild(card);
-        });
-        return;
-      }
-      
-      noMealsMsg.classList.add('hidden');
-      container.innerHTML = '';
-      
-      weekMeals.forEach(({ date, meal, adminMeal }) => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow-lg overflow-hidden card-hover transition';
-        
-        if (meal || adminMeal) {
-          card.innerHTML = `
-            <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-3">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl">📅</span>
-                <span class="font-bold">${formatDate(date)}</span>
-              </div>
-            </div>
-            <div class="p-4 space-y-3">
-              ${renderMealItem(t('Lehen platera', 'Primer plato'), adminMeal?.first_course || '', meal?.first_course_amount || '', 'emerald')}
-              ${renderMealItem(t('Bigarren platera', 'Segundo plato'), adminMeal?.second_course || '', meal?.second_course_amount || '', 'red')}
-              ${renderMealItem(t('Postrea', 'Postre'), adminMeal?.dessert || '', meal?.dessert_amount || '', 'amber')}
-              ${renderMealItemSimple(t('Lokoluxka', 'Chocolate'), meal?.lokoluxka_amount || '', 'blue')}
-              ${renderMealItemSimple(t('Pixa', 'Bebida'), meal?.pixa_amount || '', 'purple')}
-              ${meal?.notes ? `<div class="mt-3 pt-3 border-t border-gray-100"><p class="text-sm text-gray-500"><strong>${t('Oharrak', 'Notas')}:</strong> ${meal.notes}</p></div>` : ''}
-            </div>
-          `;
-        } else {
-          card.className += ' opacity-60';
-          card.innerHTML = `
-            <div class="bg-gray-200 text-gray-600 px-4 py-3">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl">📅</span>
-                <span class="font-bold">${formatDate(date)}</span>
-              </div>
-            </div>
-            <div class="p-4">
-              <p class="text-gray-400 text-sm text-center py-4">${t('Ez dago informaziorik', 'Sin información')}</p>
-            </div>
-          `;
-        }
-        
-        container.appendChild(card);
-      });
-    }
-
-    function renderMealItem(label, food, amount, color) {
-      if (!food) return '';
-      
-      const amountInfo = getAmountInfo(amount);
-      
-      return `
-        <div class="flex items-start gap-3 p-3 bg-${color}-50 rounded-lg">
-          <div class="text-2xl">${amountInfo.emoji}</div>
-          <div class="flex-1">
-            <p class="text-xs font-semibold text-${color}-700 uppercase">${label}</p>
-            <p class="font-medium text-gray-800">${food}</p>
-            <span class="inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full ${amountInfo.class}">${amountInfo.text}</span>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderMealItemSimple(label, amount, color) {
-      const amountInfo = getSimpleAmountInfo(amount);
-      return `
-        <div class="flex items-center gap-3 p-3 bg-${color}-50 rounded-lg">
-          <div class="text-2xl">${amountInfo.emoji}</div>
-          <div class="flex-1">
-            <p class="text-xs font-semibold text-${color}-700 uppercase">${label}</p>
-            <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${amountInfo.class}">${amountInfo.text}</span>
-          </div>
-        </div>
-      `;
-    }
-
-    function getAmountInfo(amount) {
-      const amounts = {
-        all: { 
-          emoji: '🌟', 
-          text: t('Dena jan du!', '¡Se lo ha comido todo!'), 
-          class: 'bg-emerald-100 text-emerald-700' 
-        },
-        half: { 
-          emoji: '😊', 
-          text: t('Erdia jan du', 'Ha comido la mitad'), 
-          class: 'bg-yellow-100 text-yellow-700' 
-        },
-        little: { 
-          emoji: '😐', 
-          text: t('Gutxi jan du', 'Ha comido poco'), 
-          class: 'bg-orange-100 text-orange-700' 
-        },
-        nothing: { 
-          emoji: '😕', 
-          text: t('Ez du jan', 'No ha comido'), 
-          class: 'bg-red-100 text-red-700' 
-        }
-      };
-      
-      return amounts[amount] || { emoji: '❓', text: t('Ez dago informaziorik', 'Sin información'), class: 'bg-gray-100 text-gray-600' };
-    }
-
-    function getSimpleAmountInfo(amount) {
-      const amounts = {
-        yes: { 
-          emoji: '✅', 
-          text: t('Bai', 'Sí'), 
-          class: 'bg-emerald-100 text-emerald-700' 
-        },
-        no: { 
-          emoji: '❌', 
-          text: t('Ez', 'No'), 
-          class: 'bg-orange-100 text-orange-700' 
-        }
-      };
-      
-      return amounts[amount] || { emoji: '❓', text: t('Ez dago informaziorik', 'Sin información'), class: 'bg-gray-100 text-gray-600' };
-    }
-
-    // =====================
-    // UTILITIES
-    // =====================
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-message').textContent = message;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3000);
-    }
-  </script>
+  });
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -791,46 +791,39 @@
       document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
     }
 
-   async function addStudent(e) {
-  e.preventDefault();
-  
-  const form = document.getElementById('add-student-form');
-  const isEditing = form.dataset.editing === 'true';
-  const studentId = form.dataset.studentId;
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true;
+ async function addStudent(e) {
+      e.preventDefault();
+      const form = document.getElementById('add-student-form');
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
 
-  // Creamos el objeto con la estructura de tus 21 campos (algunos vacíos al inicio)
-  const studentData = {
-    type: 'student',
-    student_id: isEditing ? studentId : 'STU-' + Date.now(),
-    student_name: document.getElementById('new-student-name').value.trim(),
-    student_surname: document.getElementById('new-student-surname').value.trim(),
-    class_level: document.getElementById('new-student-class').value,
-    family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
-    family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || "",
-    password: document.getElementById('new-student-password').value,
-    created_at: new Date().toISOString(),
-    date: document.getElementById('meal-date').value,
-    email_sent: "No"
-    // Los campos de comida se envían vacíos o con valores por defecto aquí
-  };
+      const studentData = {
+        type: 'student',
+        student_id: 'STU-' + Date.now(),
+        student_name: document.getElementById('new-student-name').value.trim(),
+        student_surname: document.getElementById('new-student-surname').value.trim(),
+        class_level: document.getElementById('new-student-class').value,
+        family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
+        family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || "",
+        password: document.getElementById('new-student-password').value,
+        created_at: new Date().toISOString()
+      };
 
-  if (isEditing) {
-    const index = students.findIndex(s => s.student_id === studentId);
-    if (index !== -1) students[index] = studentData;
-  } else {
-    students.push(studentData);
-  }
+      // 1. Guardar en memoria local para que aparezca en la lista ahora
+      students.push(studentData);
+      
+      // 2. ENVIAR A GOOGLE SHEETS (Esto es lo que arregla el error 401)
+      await saveToSheets(studentData);
+      // 3. Limpiamos y refrescamos la interfaz
+      hideAddStudentForm();
+      renderStudentsByClass(); // <--- AQUÍ USAMOS EL NOMBRE CORRECTO
+      
+      // Feedback visual
+      showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
 
-  // LLAMADA A TU NUEVA FUNCIÓN (La que conecta con el Excel)
-  await saveToSheets(studentData); 
-
-  hideAddStudentForm();
-  renderStudents();
-  btn.disabled = false;
-  showToast(isEditing ? t('Eguneratuta', 'Actualizado') : t('Gehituta', 'Añadido'));
-}
+    
+    }
+   
     function confirmDeleteStudent(studentId) {
       if (!currentUser || !currentUser.isAdmin) {
         showToast(t('Soilik administratzaileak ikasle berriak sortu dezakete', 'Solo los administradores pueden eliminar estudiantes'));
@@ -1276,8 +1269,8 @@ async function saveToSheets(student, mealData = {}) {
         family_email: student.family_email,
         family_email_2: student.family_email_2 || "",
         password: student.password || "",
-        date: document.getElementById('meal-date').value,
-        first_course: "Lehena",
+       date: document.getElementById('meal-date').value,        
+       first_course: "Lehena",
         first_course_amount: mealData.first_course || document.getElementById('first-course-amount').value || "",
         second_course: "Bigarrena",
         second_course_amount: mealData.second_course || document.getElementById('second-course-amount').value || "",
@@ -1288,19 +1281,25 @@ async function saveToSheets(student, mealData = {}) {
         pixa: "Pixa",
         pixa_amount: mealData.pixa || document.getElementById('pixa-amount').value || "",
         notes: document.getElementById('meal-notes') ? document.getElementById('meal-notes').value : "",
-        created_at: new Date().toISOString(),
-        email_sent: "No"
+       created_at: new Date().toISOString(),        
+       email_sent: "No"
       };
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(payload)
-      });
+     try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // <--- ESTO EVITA EL ERROR DE LA IMAGEN
+          cache: 'no-cache',
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.error("Error al enviar:", err);
+      }
     }
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9b49a3a6a2cbb8',t:'MTc3MzA3MTk3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
 
 
 

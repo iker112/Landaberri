@@ -1,0 +1,151 @@
+﻿
+
+<!doctype html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landaberri - Menuak</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style> * { font-family: 'Nunito', sans-serif; } </style>
+</head>
+<body class="bg-[#f8fcfb] min-h-screen">
+  <header class="w-full p-4 flex justify-between items-center bg-white border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="bg-[#047857] p-2 rounded-lg shadow-sm">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2L3 9v11a2 2 0 002 2h14a2 2 0 002-2V9l-9-7z" /></svg>
+      </div>
+      <h1 class="text-[#047857] font-extrabold text-lg leading-tight">Landaberri Ikastola</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="bg-gray-100 px-3 py-1 rounded-full text-xs font-bold text-gray-600">EU ?</div>
+      <button onclick="window.location.href='index.html'" class="px-5 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-bold">Irten</button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <div class="flex gap-2 p-1 bg-gray-100 rounded-2xl mb-10">
+      <button onclick="window.location.href='ikasleak.html'" class="flex-1 py-3 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all">Ikasleen kudeaketa</button>
+      <button class="flex-1 py-3 bg-[#047857] text-white font-bold rounded-xl">Asteko menuak</button>
+    </div>
+
+    <div class="mb-8 px-2">
+      <h2 class="text-2xl font-extrabold text-gray-800">Asteko menuak</h2>
+      <p class="text-gray-400 font-bold text-sm">Sartu otordua egunero</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-8 flex justify-between items-center shadow-sm">
+      <button class="text-[#047857] font-bold text-2xl px-6 py-2 hover:bg-emerald-50 rounded-xl transition-all" onclick="cambiarSemana(-7)">�</button>
+      <div class="text-center">
+        <p id="rango-semana" class="text-emerald-700 font-extrabold text-lg">Cargando...</p>
+        <p class="text-gray-400 text-[10px] font-extrabold uppercase tracking-widest">Astea</p>
+      </div>
+      <button class="text-[#047857] font-bold text-2xl px-6 py-2 hover:bg-emerald-50 rounded-xl transition-all" onclick="cambiarSemana(7)">�</button>
+    </div>
+
+    <div id="contenedor-menu" class="space-y-10"></div>
+  </main>
+
+  <script type="module">
+  // 1. Importamos la conexión a la base de datos
+  import { db } from './firebase-config.js';
+  import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js"; // Usando la versión de tu captura
+  import { getDatabase, ref as dbRef, set as dbSet, onValue as dbOnValue } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+  let fechaReferencia = new Date();
+
+  function obtenerLunes(d) {
+    d = new Date(d);
+    let day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : 1); 
+    return new Date(d.setDate(diff));
+  }
+
+  // 2. Función global para guardar (la llamamos desde el botón)
+  window.gordeMenua = (idFecha) => {
+    const card = document.getElementById(`card-${idFecha}`);
+    const inputs = card.querySelectorAll('input');
+    
+    const menuData = {
+      lehena: inputs[0].value,
+      bigarrena: inputs[1].value,
+      postrea: inputs[2].value
+    };
+
+    // Guardamos en la ruta 'menuak/año-mes-dia'
+    dbSet(dbRef(db, 'menuak/' + idFecha), menuData)
+      .then(() => alert("Menua ondo gorde da!"))
+      .catch((error) => alert("Errorea: " + error.message));
+  };
+
+  function renderizarSemana() {
+    const lunes = obtenerLunes(fechaReferencia);
+    const meses = ["Urtarrila", "Otsaila", "Martxoa", "Apirila", "Maiatza", "Ekaina", "Uztaila", "Abuztua", "Iraila", "Urria", "Azaroa", "Abendua"];
+    const diasSemana = ["Astelehena", "Asteartea", "Asteazkena", "Osteguna", "Ostirala"];
+    
+    const viernes = new Date(lunes);
+    viernes.setDate(lunes.getDate() + 4);
+
+    document.getElementById('rango-semana').textContent = `${lunes.getDate()} - ${viernes.getDate()} ${meses[lunes.getMonth()]}`;
+
+    const contenedor = document.getElementById('contenedor-menu');
+    contenedor.innerHTML = '';
+
+    for (let i = 0; i < 5; i++) {
+      let fechaDia = new Date(lunes);
+      fechaDia.setDate(lunes.getDate() + i);
+      
+      // Creamos un ID único por día (ej: 2024-03-11)
+      const idFecha = fechaDia.toISOString().split('T')[0];
+      let fechaTexto = `${fechaDia.getDate()} ${meses[fechaDia.getMonth()].substring(0,3)}.`;
+
+      const cardHtml = `
+        <div id="card-${idFecha}" class="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm transition-all">
+          <h3 class="text-gray-800 font-extrabold text-xl mb-8">${diasSemana[i]}, ${fechaTexto}</h3>
+          <div class="space-y-6">
+            <div class="bg-emerald-50/40 p-5 rounded-[1.5rem] border border-emerald-100/50">
+              <label class="block text-emerald-700 font-extrabold text-sm mb-3 ml-1">Lehen platera</label>
+              <input type="text" data-tipo="lehena" class="w-full p-4 border-2 border-emerald-100/50 rounded-2xl bg-white outline-none focus:border-emerald-500 font-semibold text-gray-700">
+            </div>
+            <div class="bg-red-50/40 p-5 rounded-[1.5rem] border border-red-100/50">
+              <label class="block text-red-700 font-extrabold text-sm mb-3 ml-1">Bigarren platera</label>
+              <input type="text" data-tipo="bigarrena" class="w-full p-4 border-2 border-red-100/50 rounded-2xl bg-white outline-none focus:border-red-500 font-semibold text-gray-700">
+            </div>
+            <div class="bg-yellow-50/40 p-5 rounded-[1.5rem] border border-yellow-100/50">
+              <label class="block text-yellow-700 font-extrabold text-sm mb-3 ml-1">Postrea</label>
+              <input type="text" data-tipo="postrea" class="w-full p-4 border-2 border-yellow-100/50 rounded-2xl bg-white outline-none focus:border-yellow-500 font-semibold text-gray-700">
+            </div>
+          </div>
+          <div class="flex justify-end mt-8">
+            <button onclick="gordeMenua('${idFecha}')" class="px-10 py-3 bg-[#047857] text-white font-bold rounded-2xl shadow-lg hover:bg-emerald-800 transition-all active:scale-95">Gorde</button>
+          </div>
+        </div>`;
+      
+      contenedor.innerHTML += cardHtml;
+
+      // 3. Recuperar datos automáticamente si ya existen en Firebase
+      dbOnValue(dbRef(db, 'menuak/' + idFecha), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const card = document.getElementById(`card-${idFecha}`);
+          if (card) {
+            card.querySelector('[data-tipo="lehena"]').value = data.lehena || '';
+            card.querySelector('[data-tipo="bigarrena"]').value = data.bigarrena || '';
+            card.querySelector('[data-tipo="postrea"]').value = data.postrea || '';
+          }
+        }
+      });
+    }
+  }
+
+  // Funciones de navegación de semana
+  window.cambiarSemana = (dias) => {
+    fechaReferencia.setDate(fechaReferencia.getDate() + dias);
+    renderizarSemana();
+  };
+
+  renderizarSemana();
+</script>
+</body>
+</html>

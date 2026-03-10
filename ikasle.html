@@ -1,0 +1,130 @@
+
+<!doctype html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landaberri - Ikasleen kudeaketa</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style> * { font-family: 'Nunito', sans-serif; } </style>
+</head>
+<body class="bg-[#f8fcfb] min-h-screen">
+  <header class="w-full p-4 flex justify-between items-center bg-white border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="bg-[#047857] p-2 rounded-lg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2L3 9v11a2 2 0 002 2h14a2 2 0 002-2V9l-9-7z" /></svg>
+      </div>
+      <div>
+        <h1 class="text-[#047857] font-extrabold text-lg">Landaberri Ikastola</h1>
+        <p class="text-gray-400 text-[10px] uppercase tracking-wider">Haur Hezkuntza 2 urte - Jantokia</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <select class="bg-white border border-gray-200 rounded-full px-3 py-1 text-sm font-bold"> <option>EU</option> </select>
+      <button onclick="window.location.href='index.html'" class="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-bold">Irten</button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6">
+    <div class="flex gap-2 p-1 bg-gray-100 rounded-xl mb-8">
+      <button class="flex-1 py-3 bg-[#047857] text-white font-bold rounded-lg">Ikasleen kudeaketa</button>
+      <button onclick="window.location.href='menuak.html'" class="flex-1 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-lg">Asteko menuak</button>
+    </div>
+
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-extrabold text-gray-800">Ikasleen kudeaketa</h2>
+      <button id="btn-gehitu" class="px-4 py-2 bg-[#047857] text-white font-bold rounded-lg flex items-center gap-2">
+        <span>+</span> Gehitu
+      </button>
+    </div>
+
+    <div id="form-ikasle-berria" class="hidden bg-white border border-emerald-200 rounded-[2rem] p-8 mb-8 shadow-sm">
+      <h3 class="text-emerald-700 font-bold mb-6">Ikasle berria</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div><label class="block text-sm font-bold text-gray-600 mb-2">Izena</label><input type="text" class="w-full p-3 border border-gray-200 rounded-xl"></div>
+        <div><label class="block text-sm font-bold text-gray-600 mb-2">Abizena</label><input type="text" class="w-full p-3 border border-gray-200 rounded-xl"></div>
+        <div class="md:col-span-2"><label class="block text-sm font-bold text-gray-600 mb-2">Mailak</label><select class="w-full p-3 border border-gray-200 rounded-xl"><option>Aukeratu</option></select></div>
+        <div><label class="block text-sm font-bold text-gray-600 mb-2">Familiaren emaila (1)</label><input type="email" class="w-full p-3 border border-gray-200 rounded-xl"></div>
+        <div><label class="block text-sm font-bold text-gray-600 mb-2">Pasahitza</label><input type="password" class="w-full p-3 border border-gray-200 rounded-xl"></div>
+      </div>
+      <div class="flex justify-end gap-3 mt-8">
+        <button id="btn-utzi" class="px-6 py-2 bg-gray-50 text-gray-600 font-bold rounded-lg">Utzi</button>
+        <button class="px-6 py-2 bg-[#047857] text-white font-bold rounded-lg">Gorde</button>
+      </div>
+    </div>
+
+    <div id="empty-state" class="bg-white rounded-[2rem] p-20 border border-gray-50 text-center shadow-sm">
+      <div class="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <p class="text-gray-400 font-semibold">Ez dago ikaslerik erregistratuta</p>
+    </div>
+  </main>
+
+ <script type="module">
+  // 1. Importamos la configuración y funciones de Firebase
+  import { db } from './firebase-config.js';
+  import { ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // 2. Elementos de la Interfaz (Tu código original)
+  const btnGehitu = document.getElementById('btn-gehitu');
+  const btnUtzi = document.getElementById('btn-utzi');
+  const formIkasle = document.getElementById('form-ikasle-berria');
+  const emptyState = document.getElementById('empty-state');
+
+  // Lógica para mostrar/ocultar el formulario
+  btnGehitu.addEventListener('click', () => formIkasle.classList.remove('hidden'));
+  btnUtzi.addEventListener('click', () => formIkasle.classList.add('hidden'));
+
+  // 3. Lógica de Guardar en Firebase
+  const btnGorde = formIkasle.querySelector('button.bg-[#047857]');
+  
+  btnGorde.addEventListener('click', () => {
+    const inputs = formIkasle.querySelectorAll('input');
+    
+    const nuevoIkasle = {
+      izena: inputs[0].value,
+      abizena: inputs[1].value,
+      email: inputs[2].value,
+      pasahitza: inputs[3].value,
+      data: new Date().toLocaleDateString()
+    };
+
+    if(nuevoIkasle.izena && nuevoIkasle.email) {
+      push(ref(db, 'ikasleak'), nuevoIkasle).then(() => {
+        alert("Ikaslea ondo gorde da!");
+        formIkasle.classList.add('hidden'); // Ocultamos el formulario
+        inputs.forEach(i => i.value = ''); // Limpiamos los campos
+      });
+    } else {
+      alert("Mesedez, bete izena eta emaila.");
+    }
+  });
+
+  // 4. Leer alumnos y mostrarlos en la lista (Tiempo real)
+  onValue(ref(db, 'ikasleak'), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      // Si hay datos, limpiamos el "Ez dago ikaslerik" y creamos una tabla/lista
+      emptyState.innerHTML = `<div class="overflow-x-auto"><table class="w-full text-left border-collapse">
+        <thead><tr class="text-emerald-700 border-b">
+          <th class="p-3">Izena</th><th class="p-3">Emaila</th><th class="p-3">Data</th>
+        </tr></thead>
+        <tbody id="lista-body"></tbody>
+      </table></div>`;
+      
+      const tbody = document.getElementById('lista-body');
+      Object.values(data).forEach(ikasle => {
+        tbody.innerHTML += `
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-3 font-bold">${ikasle.izena} ${ikasle.abizena}</td>
+            <td class="p-3 text-gray-600">${ikasle.email}</td>
+            <td class="p-3 text-xs text-gray-400">${ikasle.data || ''}</td>
+          </tr>`;
+      });
+    }
+  });
+</script>
+</body>
+</html>

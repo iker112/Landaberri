@@ -1,36 +1,23 @@
 <!doctype html>
 <html lang="eu" class="h-full">
  <head>
-<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Landaberri Jantokia">
+  <meta name="theme-color" content="#047857">
+  <meta name="description" content="Landaberri Ikastolaren jantoki kudeatzailea">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23047857'/%3E%3Cpath d='M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23DC2626'/%3E%3Cpath d='M45 48 L50 55 L60 42' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>Landaberri Jantokia</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-<script>
-  // 2. Configuración de TU proyecto (Copiado de tu captura)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBKdciOWkSuw348_NCBf19CFHNm2fTQYQk",
-    authDomain: "landaberri-2c6e6.firebaseapp.com",
-    // IMPORTANTE: Esta es la URL de tu base de datos Realtime
-    databaseURL: "https://landaberri-2c6e6-default-rtdb.firebaseio.com",
-    projectId: "landaberri-2c6e6",
-    storageBucket: "landaberri-2c6e6.firebasestorage.app",
-    messagingSenderId: "522776777885",
-    appId: "1:522776777885:web:77c424e8e264c583757074",
-    measurementId: "G-69VZ71V37B"
-  };
-
-  // 3. Inicializar la conexión
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database(); // Esta variable 'db' es la que usa saveData()
-</script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
   <style>
-   .safe-top { padding-top: env(safe-area-inset-top); }
-    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-    [v-cloak] { display: none; }
     * { font-family: 'Nunito', sans-serif; }
     .amount-btn.selected { transform: scale(1.1); box-shadow: 0 0 0 3px #047857; }
     .fade-in { animation: fadeIn 0.3s ease-out; }
@@ -399,24 +386,43 @@
       }
     };
 
-asyncasync function initApp() {
-      // 1. Escuchar datos de Firebase en tiempo real
-      db.ref('jantokia_data').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          students = data.students || [];
-          attendance = data.attendance || {};
-          renderStudents();
-        }
-      });
-
-      // 2. Configurar fecha de hoy
-      const dateInput = document.getElementById('meal-date');
-      if (dateInput) {
-        dateInput.value = new Date().toISOString().split('T')[0];
+    async function initApp() {
+      // Init Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById('school-title').textContent = config.school_name || defaultConfig.school_name;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+              { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => window.elementSdk.setConfig({ accent_color: v }) },
+              { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+              { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
+              { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => window.elementSdk.setConfig({ secondary_color: v }) }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['school_name', config.school_name || defaultConfig.school_name],
+            ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
       }
-      
-      checkAuth();
+
+      // Init Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+
+      // Set today's date
+      document.getElementById('meal-date').value = new Date().toISOString().split('T')[0];
       updateCurrentWeekDisplay();
     }
 
@@ -803,7 +809,7 @@ asyncasync function initApp() {
       document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
     }
 
-async function addStudent(e) {
+    async function addStudent(e) {
       e.preventDefault();
       
       const form = document.getElementById('add-student-form');
@@ -815,11 +821,10 @@ async function addStudent(e) {
       btn.innerHTML = `<span class="animate-pulse">${isEditing ? t('Eguneratzen...', 'Actualizando...') : t('Gehituten...', 'Añadiendo...')}</span>`;
       
       if (isEditing) {
-        // LÓGICA PARA EDITAR
-        const index = students.findIndex(s => s.student_id === studentId);
-        if (index !== -1) {
-          students[index] = {
-            ...students[index],
+        const existingStudent = allData.find(d => d.student_id === studentId && d.type === 'student');
+        if (existingStudent) {
+          const updatedData = {
+            ...existingStudent,
             student_name: document.getElementById('new-student-name').value.trim(),
             student_surname: document.getElementById('new-student-surname').value.trim(),
             class_level: document.getElementById('new-student-class').value,
@@ -828,15 +833,23 @@ async function addStudent(e) {
             password: document.getElementById('new-student-password').value
           };
           
-          saveData(); // Guardamos en Firebase
-          hideAddStudentForm();
-          showToast(t('Ikaslea eguneratu da', 'Estudiante actualizado'));
+          const result = await window.dataSdk.update(updatedData);
+          
+          btn.disabled = false;
+          btn.innerHTML = `<span data-eu="Eguneratu" data-es="Actualizar">${t('Eguneratu', 'Actualizar')}</span>`;
+          
+          if (result.isOk) {
+            hideAddStudentForm();
+            showToast(t('Ikaslea eguneratu da', 'Estudiante actualizado'));
+          } else {
+            showToast(t('Errorea ikaslea eguneratzerakoan', 'Error al actualizar estudiante'));
+          }
         }
       } else {
-        // LÓGICA PARA CREAR NUEVO
         if (students.length >= 999) {
           showToast(t('Gehienezko ikasle kopurura iritsi zara', 'Has alcanzado el límite máximo de estudiantes'));
           btn.disabled = false;
+          btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
           return;
         }
         
@@ -852,15 +865,18 @@ async function addStudent(e) {
           created_at: new Date().toISOString()
         };
         
-        students.push(studentData); // Añadimos al array local
-        saveData(); // Lo subimos a Firebase
+        const result = await window.dataSdk.create(studentData);
         
-        hideAddStudentForm();
-        showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
+        btn.disabled = false;
+        btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
+        
+        if (result.isOk) {
+          hideAddStudentForm();
+          showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
+        } else {
+          showToast(t('Errorea ikaslea gehitzean', 'Error al añadir estudiante'));
+        }
       }
-      
-      btn.disabled = false;
-      btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
     }
 
     function confirmDeleteStudent(studentId) {
@@ -903,29 +919,28 @@ async function addStudent(e) {
       });
     }
 
-  async function deleteStudent(studentId) {
-      // 1. Preguntar confirmación (para evitar borrados por error)
-      if (!confirm(t('Ziur zaude ikasle hau ezabatu nahi duzula?', '¿Estás seguro de que quieres eliminar a este estudiante?'))) {
+    async function deleteStudent(studentId) {
+      const fullRecord = allData.find(d => d.student_id === studentId && d.type === 'student');
+      
+      if (!fullRecord || !fullRecord.__backendId) {
+        showToast(t('Errorea: ikaslea ez da aurkitu', 'Error: estudiante no encontrado'));
         return;
       }
-
-      // 2. Borrar al estudiante del array local
-      students = students.filter(s => s.student_id !== studentId);
-
-      // 3. Borrar también sus comidas del objeto attendance para limpiar la base de datos
-      const dates = Object.keys(attendance);
-      dates.forEach(date => {
-        if (attendance[date][studentId]) {
-          delete attendance[date][studentId];
+      
+      const studentMeals = allData.filter(d => d.student_id === studentId && d.type === 'meal');
+      for (const meal of studentMeals) {
+        if (meal && meal.__backendId) {
+          await window.dataSdk.delete(meal);
         }
-      });
-
-      // 4. GUARDAR EN FIREBASE (Tu función estrella)
-      saveData();
-
-      // 5. Actualizar la interfaz y avisar al usuario
-      renderStudents();
-      showToast(t('Ikaslea eta bere otorduak ezabatu dira', 'Estudiante y sus comidas eliminadas'));
+      }
+      
+      const result = await window.dataSdk.delete(fullRecord);
+      
+      if (result && result.isOk) {
+        showToast(t('Ikaslea eta bere otorduak ezabatu dira', 'Estudiante y sus comidas eliminadas'));
+      } else {
+        showToast(t('Errorea ikaslea ezabatzean', 'Error al eliminar estudiante'));
+      }
     }
 
     function loadStudentMeals() {
@@ -1264,20 +1279,7 @@ async function addStudent(e) {
       toast.classList.remove('hidden');
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
-   // Esta función NO existía, la creamos ahora para conectar con Firebase
-    function saveData() {
-      db.ref('jantokia_data').set({
-        students: students,
-        attendance: attendance,
-        lastUpdate: new Date().getTime()
-      }).then(() => {
-        console.log("Sincronizado con Firebase correctamente");
-      }).catch((error) => {
-        console.error("Error al guardar en Firebase:", error);
-      });
-    }
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d9b49a3a6a2cbb8',t:'MTc3MzA3MTk3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
 

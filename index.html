@@ -11,13 +11,18 @@
   <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Landaberri%20Jantokia%22,%22short_name%22:%22Jantokia%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23047857%22,%22scope%22:%22/%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2792%27%20fill=%27%23047857%27/%253E%253Cpath%20d=%27M60%2070%20Q96%2050%20140%2070%20L140%20140%20Q96%20160%2060%20140%20Z%27%20fill=%27white%27/%253E%253Ccircle%20cx=%2796%27%20cy=%2796%27%20r=%2724%27%20fill=%27%23DC2626%27/%253E%253Cpath%20d=%27M90%2093%20L96%20110%20L120%2084%27%20stroke=%27white%27%20stroke-width=%276%27%20fill=%27none%27%20stroke-linecap=%27round%27/%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23047857'/%3E%3Cpath d='M30 35 Q50 25 70 35 L70 70 Q50 80 30 70 Z' fill='white'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23DC2626'/%3E%3Cpath d='M45 48 L50 55 L60 42' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <title>Landaberri Jantokia</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Nunito', sans-serif; }
-    .amount-btn.selected { transform: scale(1.1); box-shadow: 0 0 0 3px #047857; }
+    .amount-btn.selected {
+    background-color: #047857 !important; /* El verde de Landaberri */
+    color: white !important;
+    border-color: #064e3b !important;
+    transform: scale(1.05);
+    }    
     .fade-in { animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
@@ -307,6 +312,7 @@
     // =====================
     // STATE & CONFIGURATION
     // =====================
+    const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxqx54tKUf2rryowwu4cLmEwZG-raqGHO2gc-RL3n1jluNsbPSd06n2a1nnxabcf3CZYA/exec';
     let currentLang = 'eu';
     let currentUser = null;
     let allData = [];
@@ -319,8 +325,6 @@
     
     const MONITOR_CODE = 'landaberri2024';
 
-   const API_URL = 'https://script.google.com/macros/s/AKfycbx2RP2jFtySY_OCZ_exJEsuY2N3T2V94H0-kSmF6YpHkv5wBlg6bbgNuXJWggl9QXrXRw/exec';
-   
     const defaultConfig = {
       school_name: 'Landaberri Ikastola',
       welcome_message: 'Ongi etorri jantoki kudeatzailera',
@@ -334,65 +338,89 @@
     // =====================
     // SDK INITIALIZATION
     // =====================
-    const dataHandler = {
-      onDataChanged(data) {
-        allData = data;
-        students = data.filter(d => d.type === 'student');
-        meals = data.filter(d => d.type === 'meal');
-        
-        if (currentUser) {
-          if (currentUser.type === 'family') {
-            renderFamilyMeals();
-          } else if (currentUser.type === 'monitor') {
-            if (currentUser.isAdmin) {
-              renderStudentsByClass();
-              renderAdminMealsPanel();
-            } else {
-              renderStudentsByClass();
-            }
-          }
-        }
+  function updateLocalData(data) {
+  allData = data;
+  students = data.filter(d => d.type === 'student');
+  // Filtramos tanto 'meal' como 'meal_update' que son los que usa tu Excel
+  meals = data.filter(d => d.type === 'meal' || d.type === 'meal_update');
+  
+  if (currentUser) {
+    if (currentUser.type === 'family') {
+      renderFamilyMeals();
+    } else if (currentUser.type === 'monitor') {
+      // Cargamos la lista de alumnos por clase para la monitora
+      renderStudentsByClass();
+      if (currentUser.isAdmin) {
+        renderAdminMealsPanel();
       }
-    };
-
-async function initApp() {
-
-  // Init Element SDK (Canva visual settings)
-  if (window.elementSdk) {
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (config) => {
-        document.getElementById('school-title').textContent =
-          config.school_name || defaultConfig.school_name;
-      },
-      mapToCapabilities: (config) => ({
-        recolorables: [
-          { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
-          { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => window.elementSdk.setConfig({ accent_color: v }) },
-          { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
-          { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
-          { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => window.elementSdk.setConfig({ secondary_color: v }) }
-        ],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['school_name', config.school_name || defaultConfig.school_name],
-        ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
-      ])
-    });
+    }
   }
-
-  // Cargar datos desde Google Sheets
-  await loadDatabase();
-
-  // Set today's date
-  document.getElementById('meal-date').value =
-    new Date().toISOString().split('T')[0];
-
-  updateCurrentWeekDisplay();
 }
+
+// Función auxiliar para centralizar las peticiones a Google Sheets
+    async function loadDataFromSheet() {
+  try {
+    const response = await fetch(SCRIPT_URL);
+    allData = await response.json();
+    
+    // El código original usa 'students' y 'meals' filtrando 'allData'
+    // Debemos emular ese comportamiento:
+    students = allData.filter(d => d.type === 'student');
+    meals = allData.filter(d => d.type === 'meal' || d.type === 'meal_update');
+    
+    // Si estás en la vista de monitor, refresca la lista
+    if (currentRole === 'monitor') {
+      renderStudents();
+    } else if (currentRole === 'family') {
+      loadStudentMeals();
+    }
+  } catch (e) {
+    console.error("Error cargando datos:", e);
+  }
+}
+
+    async function initApp() {
+      // Init Element SDK
+      /*if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById('school-title').textContent = config.school_name || defaultConfig.school_name;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              { get: () => config.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+              { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => window.elementSdk.setConfig({ accent_color: v }) },
+              { get: () => config.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+              { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
+              { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => window.elementSdk.setConfig({ secondary_color: v }) }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['school_name', config.school_name || defaultConfig.school_name],
+            ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
+      }*/
+
+      // Init Data SDK
+      /*if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }*/
+
+        await loadDataFromSheet(); 
+
+    // 4. MANTÉN LA CONFIGURACIÓN DE FECHA Y SEMANA
+        document.getElementById('meal-date').value = new Date().toISOString().split('T')[0];
+        updateCurrentWeekDisplay();
+    }
+
     initApp();
 
     // =====================
@@ -435,39 +463,42 @@ async function initApp() {
     }
 
     function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim().toLowerCase();
-      const password = document.getElementById('login-password').value;
-      
-      if (email === 'jangela@landaberrikastola.org' && password === 'admin2024') {
-        currentUser = { type: 'monitor', isAdmin: true, email: email };
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('admin-menu').classList.remove('hidden');
-        showScreen('monitor-dashboard');
-        renderStudentsByClass();
-        renderAdminMealsPanel();
-        document.getElementById('login-error').classList.add('hidden');
-        return;
-      }
-      
-      const student = students.find(s => 
-        (s.family_email && s.family_email.toLowerCase() === email ||
-         s.family_email_2 && s.family_email_2.toLowerCase() === email) && 
-        s.password === password
-      );
-      
-      if (student) {
-        currentUser = { type: 'family', studentId: student.student_id, email: email };
-        document.getElementById('logout-btn').classList.remove('hidden');
-        document.getElementById('family-student-name').textContent = `${student.student_name} ${student.student_surname}`;
-        showScreen('family-dashboard');
-        renderFamilyMeals();
-        document.getElementById('login-error').classList.add('hidden');
-      } else {
-        const errorEl = document.getElementById('login-error');
-        errorEl.textContent = t('Email edo pasahitza okerra', 'Email o contraseña incorrectos');
-        errorEl.classList.remove('hidden');
-      }
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim().toLowerCase();
+        const password = document.getElementById('login-password').value;
+        
+        // LOGIN DE ADMINISTRADOR (Mantenemos el usuario fijo que tenías)
+        if (email === 'jangela@landaberrikastola.org' && password === 'admin2024') {
+            currentUser = { type: 'monitor', isAdmin: true, email: email };
+            document.getElementById('logout-btn').classList.remove('hidden');
+            document.getElementById('admin-menu').classList.remove('hidden');
+            showScreen('monitor-dashboard');
+            renderStudentsByClass();
+            renderAdminMealsPanel();
+            document.getElementById('login-error').classList.add('hidden');
+            return;
+        }
+  
+        // LOGIN DE FAMILIAS (Buscando en los datos de Google Sheets)
+        // Nota: Usamos la variable 'students' que se actualiza en loadDataFromSheet
+        const student = students.find(s => 
+            ((s.family_email && s.family_email.toLowerCase() === email) ||
+            (s.family_email_2 && s.family_email_2.toLowerCase() === email)) && 
+            String(s.password) === String(password) // Convertimos a String por si el Excel lo lee como número
+        );
+        
+        if (student) {
+            currentUser = { type: 'family', studentId: student.student_id, email: email };
+            document.getElementById('logout-btn').classList.remove('hidden');
+            document.getElementById('family-student-name').textContent = `${student.student_name} ${student.student_surname}`;
+            showScreen('family-dashboard');
+            renderFamilyMeals();
+            document.getElementById('login-error').classList.add('hidden');
+        } else {
+            const errorEl = document.getElementById('login-error');
+            errorEl.textContent = t('Email edo pasahitza okerra', 'Email o contraseña incorrectos');
+            errorEl.classList.remove('hidden');
+        }
     }
 
     function handleMonitorLogin(e) {
@@ -597,46 +628,38 @@ async function initApp() {
       });
     }
 
-async function saveAdminMeal(date, field, value) {
+    async function saveAdminMeal(date, field, value) {
+      const existingMeal = meals.find(m => m.date === date && !m.student_id);
+      
+      const mealData = {
+        type: 'meal',
+        student_id: '',
+        date: date,
+        first_course: field === 'first_course' ? value : (existingMeal?.first_course || ''),
+        first_course_amount: existingMeal?.first_course_amount || '',
+        second_course: field === 'second_course' ? value : (existingMeal?.second_course || ''),
+        second_course_amount: existingMeal?.second_course_amount || '',
+        dessert: field === 'dessert' ? value : (existingMeal?.dessert || ''),
+        dessert_amount: existingMeal?.dessert_amount || '',
+        lokoluxka: '',
+        lokoluxka_amount: '',
+        pixa: '',
+        pixa_amount: '',
+        notes: existingMeal?.notes || '',
+        created_at: new Date().toISOString(),
+        email_sent: false
+      };
 
-  const existingMeal = meals.find(m => m.date === date && !m.student_id);
-
-  const mealData = {
-    type: 'meal',
-    student_id: '',
-    date: date,
-    first_course: field === 'first_course' ? value : (existingMeal?.first_course || ''),
-    first_course_amount: existingMeal?.first_course_amount || '',
-    second_course: field === 'second_course' ? value : (existingMeal?.second_course || ''),
-    second_course_amount: existingMeal?.second_course_amount || '',
-    dessert: field === 'dessert' ? value : (existingMeal?.dessert || ''),
-    dessert_amount: existingMeal?.dessert_amount || '',
-    lokoluxka: '',
-    lokoluxka_amount: '',
-    pixa: '',
-    pixa_amount: '',
-    notes: existingMeal?.notes || '',
-    created_at: new Date().toISOString(),
-    email_sent: false
-  };
-
-  if (existingMeal) {
-
-    await fetch(API_URL + "?action=updateMeal", {
-      method: "POST",
-      body: JSON.stringify(mealData)
-    });
-
-  } else {
-
-    await fetch(API_URL + "?action=createMeal", {
-      method: "POST",
-      body: JSON.stringify(mealData)
-    });
-
-  }
-
-}
+      if (existingMeal && existingMeal.__backendId) {
+        await window.dataSdk.update({ ...existingMeal, ...mealData });
+      } else {
+        if (meals.length >= 999) {
+          showToast(t('Gehienezko erregistro kopurura iritsi zara', 'Has alcanzado el límite máximo de registros'));
+          return;
+        }
+        await window.dataSdk.create(mealData);
+      }
+    }
 
     // =====================
     // MONITOR FUNCTIONS - STUDENTS
@@ -784,87 +807,36 @@ async function saveAdminMeal(date, field, value) {
       document.getElementById('add-student-form').scrollIntoView({ behavior: 'smooth' });
     }
 
-   async function addStudent(e) {
-  e.preventDefault();
+    async function addStudent(e) {
+        e.preventDefault();
+        
+        const studentData = {
+            type: 'student',
+            student_id: 'STU-' + Date.now(),
+            student_name: document.getElementById('new-student-name').value,
+            student_surname: document.getElementById('new-student-surname').value,
+            class_level: document.getElementById('new-student-class').value,
+            family_email: document.getElementById('new-student-email').value.toLowerCase(),
+            family_email_2: document.getElementById('new-student-email-2').value.toLowerCase() || "",
+            password: document.getElementById('new-student-password').value,
+            created_at: new Date().toISOString(),
+            // Campos de comida vacíos para el registro inicial
+            date: '', first_course: '', first_course_amount: '', second_course: '',
+            second_course_amount: '', dessert: '', dessert_amount: '',
+            lokoluxka: '', lokoluxka_amount: '', pixa: '', pixa_amount: '',
+            notes: '', email_sent: 'No'
+        };
 
-  const form = document.getElementById('add-student-form');
-  const isEditing = form.dataset.editing === 'true';
-  const studentId = form.dataset.studentId;
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Necesario para Google Apps Script
+            body: JSON.stringify(studentData)
+        });
 
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.innerHTML = `<span class="animate-pulse">${isEditing ? t('Eguneratzen...', 'Actualizando...') : t('Gehituten...', 'Añadiendo...')}</span>`;
-
-  if (isEditing) {
-
-    const existingStudent = allData.find(d => d.student_id === studentId && d.type === 'student');
-
-    if (existingStudent) {
-
-      const updatedData = {
-        ...existingStudent,
-        student_name: document.getElementById('new-student-name').value.trim(),
-        student_surname: document.getElementById('new-student-surname').value.trim(),
-        class_level: document.getElementById('new-student-class').value,
-        family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
-        family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || null,
-        password: document.getElementById('new-student-password').value
-      };
-
-      const result = await fetch(API_URL + "?action=updateStudent", {
-        method: "POST",
-        body: JSON.stringify(updatedData)
-      });
-
-      btn.disabled = false;
-      btn.innerHTML = `<span data-eu="Eguneratu" data-es="Actualizar">${t('Eguneratu', 'Actualizar')}</span>`;
-
-      if (result.ok) {
+        showToast('Ikaslea gorde da / Estudiante guardado');
         hideAddStudentForm();
-        showToast(t('Ikaslea eguneratu da', 'Estudiante actualizado'));
-      } else {
-        showToast(t('Errorea ikaslea eguneratzerakoan', 'Error al actualizar estudiante'));
-      }
+        loadDataFromSheet(); // Recargar datos
     }
-
-  } else {
-
-    if (students.length >= 999) {
-      showToast(t('Gehienezko ikasle kopurura iritsi zara', 'Has alcanzado el límite máximo de estudiantes'));
-      btn.disabled = false;
-      btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
-      return;
-    }
-
-    const studentData = {
-      type: 'student',
-      student_id: 'STU-' + Date.now(),
-      student_name: document.getElementById('new-student-name').value.trim(),
-      student_surname: document.getElementById('new-student-surname').value.trim(),
-      class_level: document.getElementById('new-student-class').value,
-      family_email: document.getElementById('new-student-email').value.trim().toLowerCase(),
-      family_email_2: document.getElementById('new-student-email-2').value.trim().toLowerCase() || null,
-      password: document.getElementById('new-student-password').value,
-      created_at: new Date().toISOString()
-    };
-
-    const result = await fetch(API_URL + "?action=createStudent", {
-      method: "POST",
-      body: JSON.stringify(studentData)
-    });
-
-    btn.disabled = false;
-    btn.innerHTML = `<span data-eu="Gorde" data-es="Guardar">${t('Gorde', 'Guardar')}</span>`;
-
-    if (result.ok) {
-      hideAddStudentForm();
-      showToast(t('Ikaslea gehitu da', 'Estudiante añadido'));
-    } else {
-      showToast(t('Errorea ikaslea gehitzean', 'Error al añadir estudiante'));
-    }
-
-  }
-}
 
     function confirmDeleteStudent(studentId) {
       if (!currentUser || !currentUser.isAdmin) {
@@ -906,73 +878,84 @@ async function saveAdminMeal(date, field, value) {
       });
     }
 
-   async function deleteStudent(studentId) {
+    async function deleteStudent(studentId) {
+        if (!confirm(t('Ziur zaude ezabatu nahi duzula?', '¿Estás seguro de que quieres eliminarlo?'))) {
+            return;
+        }
 
-  const fullRecord = allData.find(
-    d => d.student_id === studentId && d.type === 'student'
-  );
+        const payload = {
+            action: 'delete',
+            student_id: studentId
+        };
 
-  if (!fullRecord) {
-    showToast(t('Errorea: ikaslea ez da aurkitu', 'Error: estudiante no encontrado'));
-    return;
-  }
+        try {
+            // Usamos el mismo SCRIPT_URL que para guardar
+            await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Para evitar errores de CORS con Google
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+            });
 
-  const result = await fetch(API_URL + "?action=deleteStudent", {
-    method: "POST",
-    body: JSON.stringify({ student_id: studentId })
-  });
-
-  if (result.ok) {
-    showToast(t('Ikaslea eta bere otorduak ezabatu dira', 'Estudiante y sus comidas eliminadas'));
-  } else {
-    showToast(t('Errorea ikaslea ezabatzean', 'Error al eliminar estudiante'));
-  }
-
-}
+            showToast(t('Ikaslea eta datuak ezabatu dira', 'Estudiante y datos eliminados'));
+            
+            // IMPORTANTE: Refresca los datos locales para que desaparezca de la lista
+            await loadDataFromSheet(); 
+            
+        } catch (error) {
+            console.error('Error al borrar:', error);
+            showToast(t('Errorea ezabatzean', 'Error al eliminar'));
+        }
+    }
 
     function loadStudentMeals() {
-      const date = document.getElementById('meal-date').value;
-      
-      if (!date || !selectedStudentForMeals) {
-        document.getElementById('meal-entry-form').classList.add('hidden');
-        document.getElementById('select-student-message').classList.remove('hidden');
-        return;
-      }
-      
-      document.getElementById('select-student-message').classList.add('hidden');
-      document.getElementById('meal-entry-form').classList.remove('hidden');
-      
-      document.getElementById('meal-form-subtitle').textContent = 
-        `${selectedStudentForMeals.student_name} ${selectedStudentForMeals.student_surname} - ${formatDate(date)}`;
-      
-      const existingMeal = meals.find(m => m.student_id === selectedStudentForMeals.student_id && m.date === date);
-      
-      // Load meal content from admin-saved meals
-      const adminMeal = meals.find(m => !m.student_id && m.date === date);
-      
-      document.getElementById('first-course-display').textContent = adminMeal?.first_course || '';
-      document.getElementById('second-course-display').textContent = adminMeal?.second_course || '';
-      document.getElementById('dessert-display').textContent = adminMeal?.dessert || '';
-      
-      if (existingMeal) {
-        editingMealId = existingMeal.__backendId;
+        const date = document.getElementById('meal-date').value;
+  
+        if (!date || !selectedStudentForMeals) {
+            document.getElementById('meal-entry-form').classList.add('hidden');
+            document.getElementById('select-student-message').classList.remove('hidden');
+            return;
+        }
+  
+        document.getElementById('select-student-message').classList.add('hidden');
+        document.getElementById('meal-entry-form').classList.remove('hidden');
         
-        document.getElementById('first-course-amount').value = existingMeal.first_course_amount || '';
-        document.getElementById('second-course-amount').value = existingMeal.second_course_amount || '';
-        document.getElementById('dessert-amount').value = existingMeal.dessert_amount || '';
-        document.getElementById('lokoluxka-amount').value = existingMeal.lokoluxka_amount || '';
-        document.getElementById('pixa-amount').value = existingMeal.pixa_amount || '';
-        document.getElementById('meal-notes').value = existingMeal.notes || '';
+        document.getElementById('meal-form-subtitle').textContent = 
+            `${selectedStudentForMeals.student_name} ${selectedStudentForMeals.student_surname} - ${formatDate(date)}`;
         
-        updateAmountButtons('first', existingMeal.first_course_amount);
-        updateAmountButtons('second', existingMeal.second_course_amount);
-        updateAmountButtons('dessert', existingMeal.dessert_amount);
-        updateAmountButtons('lokoluxka', existingMeal.lokoluxka_amount);
-        updateAmountButtons('pixa', existingMeal.pixa_amount);
-      } else {
-        editingMealId = null;
-        clearMealForm();
-      }
+        // Buscamos si ya existe un registro previo para este niño y día
+        const existingMeal = meals.find(m => m.student_id === selectedStudentForMeals.student_id && m.date === date);
+                
+        // Cargamos el nombre de los platos (Menú del día) que puso la Admin
+        const adminMeal = meals.find(m => (!m.student_id || m.student_id === "") && m.date === date);
+        
+        document.getElementById('first-course-display').textContent = adminMeal?.first_course || t('Ez dago definituta', 'No definido');
+        document.getElementById('second-course-display').textContent = adminMeal?.second_course || t('Ez dago definituta', 'No definido');
+        document.getElementById('dessert-display').textContent = adminMeal?.dessert || t('Ez dago definituta', 'No definido');
+        
+        if (existingMeal) {
+            // Marcamos que hay un registro previo (opcional, para tu lógica interna)
+            editingMealId = "EXISTING"; 
+    
+            // Rellenamos los campos del formulario con lo que había en la hoja de cálculo
+            document.getElementById('first-course-amount').value = existingMeal.first_course_amount || '';
+            document.getElementById('second-course-amount').value = existingMeal.second_course_amount || '';
+            document.getElementById('dessert-amount').value = existingMeal.dessert_amount || '';
+            document.getElementById('lokoluxka-amount').value = existingMeal.lokoluxka_amount || '';
+            document.getElementById('pixa-amount').value = existingMeal.pixa_amount || '';
+            document.getElementById('meal-notes').value = existingMeal.notes || '';
+            
+            // Actualizamos visualmente los botones (muy importante para la UI)
+            updateAmountButtons('first', existingMeal.first_course_amount);
+            updateAmountButtons('second', existingMeal.second_course_amount);
+            updateAmountButtons('dessert', existingMeal.dessert_amount);
+            updateAmountButtons('lokoluxka', existingMeal.lokoluxka_amount);
+            updateAmountButtons('pixa', existingMeal.pixa_amount);
+        } else {
+            editingMealId = null;
+            clearMealForm(); // Limpiar formulario si el niño no tiene nota hoy
+        }
     }
 
     function clearMealForm() {
@@ -998,74 +981,45 @@ async function saveAdminMeal(date, field, value) {
       });
     }
 
-   async function saveMeal(e) {
-  e.preventDefault();
+    async function saveMeal(e) {
+        e.preventDefault();
+        
+        const mealData = {
+            type: 'meal_update',
+            student_id: selectedStudentForMeals.student_id,
+            student_name: selectedStudentForMeals.student_name,
+            student_surname: selectedStudentForMeals.student_surname,
+            class_level: selectedStudentForMeals.class_level,
+            family_email: selectedStudentForMeals.family_email,
+            family_email_2: selectedStudentForMeals.family_email_2 || "",
+            password: selectedStudentForMeals.password,
+            date: document.getElementById('meal-date').value,
+            first_course: 'Lehena', // O el valor que corresponda
+            first_course_amount: document.getElementById('first-course-amount').value,
+            second_course: 'Bigarrena',
+            second_course_amount: document.getElementById('second-course-amount').value,
+            dessert: 'Postrea',
+            dessert_amount: document.getElementById('dessert-amount').value,
+            lokoluxka: 'Lokoluxka',
+            lokoluxka_amount: document.getElementById('lokoluxka-amount').value,
+            pixa: 'Pixa',
+            pixa_amount: document.getElementById('pixa-amount').value,
+            notes: document.getElementById('meal-notes').value,
+            created_at: new Date().toISOString(),
+            email_sent: 'No'
+        };
 
-  if (!selectedStudentForMeals) {
-    showToast(t('Errorea: ikaslea aukeratu gabe', 'Error: sin estudiante seleccionado'));
-    return;
-  }
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(mealData)
+        });
 
-  const date = document.getElementById('meal-date').value;
-
-  const mealData = {
-    type: 'meal',
-    student_id: selectedStudentForMeals.student_id,
-    date: date,
-    first_course: '',
-    first_course_amount: document.getElementById('first-course-amount').value,
-    second_course: '',
-    second_course_amount: document.getElementById('second-course-amount').value,
-    dessert: '',
-    dessert_amount: document.getElementById('dessert-amount').value,
-    lokoluxka: '',
-    lokoluxka_amount: document.getElementById('lokoluxka-amount').value,
-    pixa: '',
-    pixa_amount: document.getElementById('pixa-amount').value,
-    notes: document.getElementById('meal-notes').value,
-    created_at: new Date().toISOString(),
-    email_sent: false
-  };
-
-  const btn = document.getElementById('save-meal-btn');
-  btn.disabled = true;
-  btn.innerHTML = `<span class="animate-pulse">${t('Gordetzen...', 'Guardando...')}</span>`;
-
-  let response;
-
-  if (editingMealId) {
-
-    response = await fetch(API_URL + "?action=updateMeal", {
-      method: "POST",
-      body: JSON.stringify(mealData)
-    });
-
-  } else {
-
-    if (meals.length >= 999) {
-      showToast(t('Gehienezko erregistro kopurura iritsi zara', 'Has alcanzado el límite máximo de registros'));
-      btn.disabled = false;
-      btn.innerHTML = `<span data-eu="Gorde otordua" data-es="Guardar comida">${t('Gorde otordua', 'Guardar comida')}</span>`;
-      return;
+        showToast('Gorde da / Guardado');
+        backFromMeals();
+        loadDataFromSheet();
     }
 
-    response = await fetch(API_URL + "?action=createMeal", {
-      method: "POST",
-      body: JSON.stringify(mealData)
-    });
-
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = `<span data-eu="Gorde otordua" data-es="Guardar comida">${t('Gorde otordua', 'Guardar comida')}</span>`;
-
-  if (response.ok) {
-    showToast(t('Otordua gorde da', 'Comida guardada'));
-  } else {
-    showToast(t('Errorea gordetzean', 'Error al guardar'));
-  }
-
-}
     // =====================
     // FAMILY FUNCTIONS
     // =====================
@@ -1115,18 +1069,23 @@ async function saveAdminMeal(date, field, value) {
     }
 
     function renderFamilyMeals() {
-      if (!currentUser || currentUser.type !== 'family') return;
-      
-      const container = document.getElementById('family-meals-grid');
-      const noMealsMsg = document.getElementById('no-meals-message');
-      const weekDates = getWeekDates(currentWeekOffset);
-      
-      const studentMeals = meals.filter(m => m.student_id === currentUser.studentId);
-      const weekMeals = weekDates.map(date => {
-        const meal = studentMeals.find(m => m.date === date);
-        const adminMeal = meals.find(m => !m.student_id && m.date === date);
-        return { date, meal, adminMeal };
-      });
+        if (!currentUser || currentUser.type !== 'family') return;
+  
+            const container = document.getElementById('family-meals-grid');
+            const noMealsMsg = document.getElementById('no-meals-message');
+            const weekDates = getWeekDates(currentWeekOffset);
+            
+            // 1. Filtrar las comidas de ESTE alumno específico
+            const studentMeals = meals.filter(m => m.student_id === currentUser.studentId);
+  
+            // 2. Mapear los días de la semana
+            const weekMeals = weekDates.map(date => {
+                // Buscamos la fila que tiene los datos de lo que comió el niño ese día
+                const meal = studentMeals.find(m => m.date === date);
+                // Buscamos la fila del "Menú del día" (donde student_id está vacío, puesto por la admin)
+                const adminMeal = meals.find(m => (!m.student_id || m.student_id === "") && m.date === date);
+                return { date, meal, adminMeal };
+        });
       
       const hasMeals = weekMeals.some(wm => wm.meal || wm.adminMeal);
       
@@ -1210,43 +1169,33 @@ async function saveAdminMeal(date, field, value) {
     }
 
     function renderMealItemSimple(label, amount, color) {
-      const amountInfo = getSimpleAmountInfo(amount);
-      return `
-        <div class="flex items-center gap-3 p-3 bg-${color}-50 rounded-lg">
-          <div class="text-2xl">${amountInfo.emoji}</div>
-          <div class="flex-1">
-            <p class="text-xs font-semibold text-${color}-700 uppercase">${label}</p>
-            <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${amountInfo.class}">${amountInfo.text}</span>
-          </div>
-        </div>
-      `;
+        // Cambiado de getSimpleAmountInfo a getAmountInfo
+        const amountInfo = getAmountInfo(amount); 
+        return `
+            <div class="flex items-center gap-3 p-3 bg-${color}-50 rounded-lg">
+            <div class="text-2xl">${amountInfo.emoji}</div>
+            <div class="flex-1">
+                <p class="text-xs font-semibold text-${color}-700 uppercase">${label}</p>
+                <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${amountInfo.class}">${amountInfo.text}</span>
+            </div>
+            </div>
+        `;
     }
 
     function getAmountInfo(amount) {
-      const amounts = {
-        all: { 
-          emoji: '🌟', 
-          text: t('Dena jan du!', '¡Se lo ha comido todo!'), 
-          class: 'bg-emerald-100 text-emerald-700' 
-        },
-        half: { 
-          emoji: '😊', 
-          text: t('Erdia jan du', 'Ha comido la mitad'), 
-          class: 'bg-yellow-100 text-yellow-700' 
-        },
-        little: { 
-          emoji: '😐', 
-          text: t('Gutxi jan du', 'Ha comido poco'), 
-          class: 'bg-orange-100 text-orange-700' 
-        },
-        nothing: { 
-          emoji: '😕', 
-          text: t('Ez du jan', 'No ha comido'), 
-          class: 'bg-red-100 text-red-700' 
-        }
-      };
-      
-      return amounts[amount] || { emoji: '❓', text: t('Ez dago informaziorik', 'Sin información'), class: 'bg-gray-100 text-gray-600' };
+        const amounts = {
+            // Casos para platos (Primero, Segundo, Postre)
+            all: { emoji: '🌟', text: t('Dena jan du!', '¡Se lo ha comido todo!'), class: 'bg-emerald-100 text-emerald-700' },
+            half: { emoji: '😊', text: t('Erdia jan du', 'Ha comido la mitad'), class: 'bg-yellow-100 text-yellow-700' },
+            little: { emoji: '😐', text: t('Gutxi jan du', 'Ha comido poco'), class: 'bg-orange-100 text-orange-700' },
+            nothing: { emoji: '😕', text: t('Ez du jan', 'No ha comido'), class: 'bg-red-100 text-red-700' },
+            
+            // Casos para Pixa / Lokoluxka (Si tu Excel guarda 'yes'/'no' o 'all'/'nothing')
+            yes: { emoji: '✅', text: t('Bai', 'Sí'), class: 'bg-emerald-100 text-emerald-700' },
+            no: { emoji: '❌', text: t('Ez', 'No'), class: 'bg-red-100 text-red-700' }
+        };
+        
+        return amounts[amount] || { emoji: '❓', text: t('Ez dago informaziorik', 'Sin información'), class: 'bg-gray-100 text-gray-600' };
     }
 
     function getSimpleAmountInfo(amount) {
@@ -1276,8 +1225,6 @@ async function saveAdminMeal(date, field, value) {
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
   </script>
- </body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da17fa2163e6e11',t:'MTc3MzEzNzEwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
 

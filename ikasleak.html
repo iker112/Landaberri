@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela Landaberri - Ikasleak</title>
-    <style>
-
-        /* --- ESTILOS GENERALES (MANTENIENDO TUS COLORES) --- */
+        <style>
+        /* --- ESTILOS GENERALES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; }
         .container { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         header { text-align: center; margin-bottom: 20px; position: relative; }
         .logo { width: 60px; margin-bottom: 10px; }
         
+        /* Logout a la derecha */
         .logout-btn { position: absolute; top: 0; right: 0; background: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
-        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; }
+        
+        /* Idioma a la izquierda (para que no choquen) */
+        .language-switcher { position: absolute; top: 0; left: 0; z-index: 10; }
+        .language-switcher button { background: #f1f2f6; border: 1px solid #ddd; color: #000; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+
+        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; margin-top: 10px; }
         .maila { color: #636e72; font-style: italic; margin-bottom: 10px; font-size: 0.9rem; }
         
         .semana-selector { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
@@ -24,7 +29,6 @@
         .eguna-card { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
         .eguna-titulua { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
         
-        /* Colores originales por día */
         .card-mon { border-left-color: #3498db; } .card-mon .eguna-titulua { color: #2980b9; }
         .card-tue { border-left-color: #e67e22; } .card-tue .eguna-titulua { color: #d35400; }
         .card-wed { border-left-color: #9b59b6; } .card-wed .eguna-titulua { color: #8e44ad; }
@@ -42,72 +46,40 @@
         .input-amount { flex: 1; font-weight: 600; background: #fff; cursor: pointer; }
         textarea { resize: none; }
 
-        /* Estilos cuando MONITOR o ADMIN están activos */
-        body.monitor-mode .input-amount, 
-        body.monitor-mode .input-text, 
-        body.monitor-mode textarea,
-        body.admin-mode .input-plato,
-        body.admin-mode .input-amount, 
-        body.admin-mode .input-text, 
-        body.admin-mode textarea { 
-            pointer-events: auto !important; 
-            background: white !important; 
-            border: 1px solid #3498db; 
-        }
+        .save-btn-day { display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px; }
 
-        .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .back-btn { display: none; background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem; width: fit-content; }
 
-        .save-btn-day {
-            display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px;
-        }
-
-        .language-switcher { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        .language-switcher button { background: white; border: none; color: #000; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
-        .back-btn { 
-            display: none; background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;
-        }
-
-                    /* --- ESTO SOLO SE ACTIVA EN MÓVIL --- */
+        /* --- AJUSTES PARA MÓVIL --- */
         @media (max-width: 600px) {
-            /* Mantenemos tu fondo y colores, solo ajustamos espacio */
             body { padding: 10px; }
-            .container { padding: 15px; width: 95%; }
-
-            /* Forzamos que el nombre del plato y el selector se apilen verticalmente */
-            .inputs-row {
-                display: flex !important;
-                flex-direction: column !important;
-                gap: 8px !important;
-            }
-
-            /* Ajustamos el ancho para que no se salga de la pantalla */
-            .input-plato, select {
-                width: 100% !important;
-                margin-right: 0 !important;
-                font-size: 16px !important; /* Evita zoom automático en iPhone */
-            }
-
-            /* Hacemos los selectores más altos para el dedo */
-            select {
-                padding: 10px !important;
-                height: 45px !important;
-            }
+            .container { padding: 15px; width: 95%; margin-top: 40px; } /* Espacio para botones superiores */
+            
+            /* Bajamos el logo un poco para que no choque con los botones si el móvil es muy estrecho */
+            .logo { margin-top: 25px; }
+            
+            .inputs-row { flex-direction: column !important; }
+            .input-plato, select { font-size: 16px !important; }
+            select { height: 45px !important; }
+            
+            .semana-info { min-width: auto; flex: 1; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body class="">
 
-    <div class="language-switcher">
-        <button id="lang-btn" onclick="toggleLanguage()">Castellano</button>
-    </div>
-
     <div class="container">
         <header>
-            <div style="display: flex; justify-content: flex-start;"> 
+            <div class="language-switcher">
+                <button id="lang-btn" onclick="toggleLanguage()">Castellano</button>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">Logout</button>
+
+            <div style="display: flex; justify-content: center; width: 100%; margin-top: 35px;"> 
                 <button id="back-btn-dynamic" class="back-btn" onclick="irAtras()">‹ Bueltatu</button>
             </div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBQDAKLJcfbVRZ5H83qWzeyRaEC0FE1a9Wwg&s" alt="Logo" class="logo">
             <h2 id="student-name">...</h2>
             <p class="maila" id="student-level">...</p>

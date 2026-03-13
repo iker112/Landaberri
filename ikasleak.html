@@ -4,111 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela Landaberri - Ikasleak</title>
-    <style>
+   <style>
+    /* 1. ESTILOS GENERALES (Base) */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    
+    body { 
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); 
+        min-height: 100vh; 
+        padding: 20px; 
+    }
 
-        @media (max-width: 600px) {
-            .day-card {
-                padding: 15px;
-                margin-bottom: 15px;
-            }
+    .container { 
+        background: white; 
+        max-width: 600px; 
+        margin: 0 auto; 
+        padding: 30px; 
+        border-radius: 15px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+        width: 100%;
+    }
 
-            /* Hace que las etiquetas y los selectores ocupen toda la línea */
-            .meal-row {
-                display: flex;
-                flex-direction: column; /* Apila nombre del plato y selector */
-                gap: 5px;
-                margin-bottom: 15px;
-            }
+    header { text-align: center; margin-bottom: 20px; position: relative; }
+    .logo { width: 60px; margin-bottom: 10px; }
+    
+    .logout-btn { 
+        position: absolute; top: 0; right: 0; 
+        background: #ff4757; color: white; border: none; 
+        padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; 
+    }
 
-            .meal-row input, 
-            .meal-row select {
-                width: 100%;
-                font-size: 16px; /* Evita que iOS haga zoom automático al enfocar */
-                padding: 10px;
-            }
+    h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; font-size: 1.4rem; }
+    .maila { color: #636e72; font-style: italic; margin-bottom: 10px; }
+    
+    .semana-selector { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
+    .semana-info { 
+        background: #e8f5e9; color: #2e7d32; padding: 8px 10px; 
+        border-radius: 20px; font-size: 0.85rem; font-weight: bold; 
+        flex-grow: 1; text-align: center; 
+    }
+    
+    .nav-btn { 
+        background: #27ae60; color: white; border: none; 
+        width: 40px; height: 40px; border-radius: 50%; 
+        cursor: pointer; font-size: 1.2rem; 
+        display: flex; align-items: center; justify-content: center; 
+    }
 
-            .notes-area {
-                height: 80px;
-            }
+    .eguna-card { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
+    .eguna-titulua { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
+    
+    /* Colores por día */
+    .card-mon { border-left-color: #3498db; } .card-mon .eguna-titulua { color: #2980b9; }
+    .card-tue { border-left-color: #e67e22; } .card-tue .eguna-titulua { color: #d35400; }
+    .card-wed { border-left-color: #9b59b6; } .card-wed .eguna-titulua { color: #8e44ad; }
+    .card-thu { border-left-color: #e74c3c; } .card-thu .eguna-titulua { color: #c0392b; }
+    .card-fri { border-left-color: #27ae60; } .card-fri .eguna-titulua { color: #1e8449; }
 
-            .save-btn {
-                width: 100%; /* Botón de guardar a lo ancho */
-                padding: 15px;
-            }
+    .plater-group { display: flex; flex-direction: column; gap: 12px; }
+    .plater-item { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 0.75rem; color: #7f8c8d; font-weight: 700; text-transform: capitalize; }
+    .inputs-row { display: flex; gap: 8px; }
+    
+    input, select, textarea { 
+        padding: 12px; border: 1px solid #dfe6e9; 
+        border-radius: 6px; font-size: 16px !important; /* Importante: 16px evita zoom en iPhone */
+    }
+    
+    .input-plato { flex: 2; background: #f8f9fa; pointer-events: none; } 
+    .input-amount { flex: 1; font-weight: 600; background: #f1f2f6; pointer-events: none; }
+    .input-text { width: 100%; background: #fff; }
+    textarea { width: 100%; resize: none; background: #f8f9fa; }
+
+    .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+
+    .save-btn-day {
+        display: none; width: 100%; padding: 15px; 
+        background: #3498db; color: white; border: none; 
+        border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;
+    }
+
+    /* 2. MEDIA QUERIES (Se escriben AL FINAL para que funcionen) */
+    @media (max-width: 600px) {
+        body { padding: 10px; } /* Menos espacio fuera */
+        
+        .container { 
+            padding: 15px; /* Menos espacio dentro */
+            border-radius: 10px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; }
-        .container { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        header { text-align: center; margin-bottom: 20px; position: relative; }
-        .logo { width: 15%; margin-bottom: 10px; }
-        .logout-btn { position: absolute; top: 0; right: 0; background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; }
-        .maila { color: #636e72; font-style: italic; margin-bottom: 10px; }
+        .logout-btn { padding: 5px 10px; font-size: 0.7rem; }
         
-        .semana-selector { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .semana-info { background: #e8f5e9; color: #2e7d32; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; min-width: 220px; text-align: center; }
-        .nav-btn { background: #27ae60; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
-        .nav-btn:hover { background: #1e8449; }
+        h2 { font-size: 1.1rem; }
 
-        .eguna-card { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
-        .eguna-titulua { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
-        
-        /* Colores por día */
-        .card-mon { border-left-color: #3498db; } .card-mon .eguna-titulua { color: #2980b9; }
-        .card-tue { border-left-color: #e67e22; } .card-tue .eguna-titulua { color: #d35400; }
-        .card-wed { border-left-color: #9b59b6; } .card-wed .eguna-titulua { color: #8e44ad; }
-        .card-thu { border-left-color: #e74c3c; } .card-thu .eguna-titulua { color: #c0392b; }
-        .card-fri { border-left-color: #27ae60; } .card-fri .eguna-titulua { color: #1e8449; }
+        .semana-info { font-size: 0.75rem; min-width: auto; }
 
-        .plater-group { display: flex; flex-direction: column; gap: 12px; }
-        .plater-item { display: flex; flex-direction: column; gap: 4px; }
-        label { font-size: 0.75rem; color: #7f8c8d; font-weight: 700; text-transform: capitalize; }
-        .inputs-row { display: flex; gap: 8px; }
-        input, select, textarea { padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; font-size: 0.9rem; }
-        
-        .input-plato { flex: 2; background: #f8f9fa; pointer-events: none; } 
-        .input-amount { flex: 1; font-weight: 600; background: #f1f2f6; pointer-events: none; }
-        .input-text { width: 100%; background: #fff; }
-        textarea { width: 100%; resize: none; background: #f8f9fa; }
-
-        /* Estilos cuando MONITOR o ADMIN están activos */
-        body.monitor-mode .input-amount, 
-        body.monitor-mode .input-text, 
-        body.monitor-mode textarea,
-        body.admin-mode .input-plato,
-        body.admin-mode .input-amount, 
-        body.admin-mode .input-text, 
-        body.admin-mode textarea { 
-            pointer-events: auto !important; 
-            background: white !important; 
-            border: 1px solid #3498db; 
+        .inputs-row { 
+            flex-direction: column; /* En móvil, nombre de plato y selector uno sobre otro */
         }
 
-        .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .input-plato, .input-amount {
+            width: 100%;
+        }
 
         .save-btn-day {
-            display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;
+            padding: 18px; /* Botón más grande para el pulgar */
+            font-size: 1rem;
         }
-
-        .language-switcher { text-align: right; margin-bottom: 15px; }
-        .language-switcher button { background: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        
-        /* AJUSTE BOTÓN VOLVER */
-        .back-btn { 
-            display: none; 
-            background: #3498db; 
-            color: white; 
-            border: none; 
-            padding: 8px 15px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            margin-right: auto; /* Empuja el botón a la izquierda */
-            text-align: left;
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 

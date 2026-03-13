@@ -6,38 +6,6 @@
     <title>Jangela - Administratzailea</title>
     <style>
 
-        @media (max-width: 600px) {
-            header { padding: 15px; margin-bottom: 15px; }
-            .logo { width: 30%; } /* Logo más visible */
-            
-            .logout-btn { 
-                position: static; /* En móvil lo bajamos o centramos */
-                display: block;
-                width: 30%;
-                margin-top: 10px;
-            }
-
-            /* Las tarjetas de los alumnos */
-            .ikasle-card {
-                padding: 15px;
-                margin-bottom: 8px;
-                flex-direction: row; /* Mantenemos nombre y botón en línea */
-                justify-content: space-between;
-                font-size: 1rem;
-            }
-
-            .delete-btn {
-                padding: 10px 15px; /* Botón de borrar más grande para no fallar */
-            }
-
-            /* El botón flotante de "Gehitu" (si lo tienes) o el de navegación */
-            .nav-add-btn {
-                width: 100%;
-                text-align: center;
-                padding: 15px;
-            }
-        }
-
         /* ... (Tus estilos anteriores se mantienen) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #f0f2f5; min-height: 100vh; padding: 20px; }
@@ -78,6 +46,37 @@
             font-weight: bold; font-size: 1.2rem;
         }
         .delete-btn:hover { background: #ff6b81; }
+
+        
+            /* --- ESTO SOLO SE ACTIVA EN MÓVIL --- */
+        @media (max-width: 600px) {
+            /* Ajuste de cabecera: el botón logout ya no pisa el logo */
+            header {
+                padding: 40px 15px 15px 15px !important;
+            }
+            
+            .logout-btn {
+                top: 10px !important;
+                right: 10px !important;
+                padding: 5px 10px !important;
+            }
+
+            .logo {
+                width: 60px !important; /* Tamaño fijo para que no baile */
+            }
+
+            /* Tarjetas más grandes para el dedo */
+            .ikasle-card {
+                padding: 15px !important;
+                margin-bottom: 10px !important;
+            }
+
+            /* Botón de borrar más grande */
+            .delete-btn {
+                width: 45px !important;
+                height: 45px !important;
+            }
+        }
     </style>
 </head>
 <body>

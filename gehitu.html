@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gehitu Ikaslea - Jangela</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; min-height: 100vh; padding: 20px; }
+        
+        .container { max-width: 600px; margin: 0 auto; }
+
+        .back-btn {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+
+        .admin-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h3 { margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #3498db; display: inline-block; padding-bottom: 5px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.85rem; font-weight: bold; color: #7f8c8d; }
+        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        
+        .add-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .add-btn:hover { background: #219150; }
+        .add-btn:disabled { background: #95a5a6; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="administratzailea.html" class="back-btn">← Atzera (Volver)</a>
+
+        <div class="admin-panel">
+            <h3>Ikasle Berria Erregistratu</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Izena</label>
+                    <input type="text" id="new-name" placeholder="Jon">
+                </div>
+                <div class="form-group">
+                    <label>Abizena</label>
+                    <input type="text" id="new-surname" placeholder="Garcia">
+                </div>
+                <div class="form-group">
+                    <label>Maila</label>
+                    <select id="new-level">
+                        <option value="HH2urte">HH2urte</option>
+                        <option value="HH3urte">HH3urte</option>
+                        <option value="HH4urte">HH4urte</option>
+                        <option value="HH5urte">HH5urte</option>
+                        <option value="LH1">LH1</option>
+                        <option value="LH2">LH2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Email (Gurasoa)</label>
+                    <input type="email" id="new-email" placeholder="gurasoa@mail.com">
+                    <label>Email2 (Gurasoa)</label>
+                    <input type="email" id="new-email-2" placeholder="gurasoa2@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>Pasahitza</label>
+                    <input type="password" id="new-pass" placeholder="Jarri zure pasahitza">
+                </div>
+                <button class="add-btn" id="btn-add" onclick="addStudent()">GEHITU IKASLEA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBEC49t-NRGR3NqN0FkqACAV0YRuGeqr-oxMCWsXxftiK1fL-OkTJA_PU0QTppLV0HzQ/exec";
+
+        function addStudent() {
+            const name = document.getElementById('new-name').value;
+            const surname = document.getElementById('new-surname').value;
+            const level = document.getElementById('new-level').value;
+            const email = document.getElementById('new-email').value;
+            const email2 = document.getElementById('new-email-2').value;
+            const pass = document.getElementById('new-pass').value;
+
+            if(!name || !surname || !email) return alert("Bete datu guztiak");
+
+            const btn = document.getElementById('btn-add');
+            btn.innerText = "Gordetzen...";
+            btn.disabled = true;
+
+            const datos = {
+                action: "addStudent",
+                name: name,
+                surname: surname,
+                level: level,
+                email: email,
+                email2: email2,
+                password: pass
+            };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(datos)
+            }).then(() => {
+                alert("Ikaslea ongi gehitu da");
+                window.location.href = "administratzailea.html"; // Vuelve a la lista tras añadir
+            }).catch(e => {
+                console.error(e);
+                alert("Errorea");
+                btn.disabled = false;
+                btn.innerText = "GEHITU IKASLEA";
+            });
+        }
+    </script>
+</body>
+</html>

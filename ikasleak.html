@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jangela Landaberri - Ikasleak</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        header { text-align: center; margin-bottom: 20px; position: relative; }
+        .logo { width: 15%; margin-bottom: 10px; }
+        .logout-btn { position: absolute; top: 0; right: 0; background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; }
+        .maila { color: #636e72; font-style: italic; margin-bottom: 10px; }
+        
+        .semana-selector { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .semana-info { background: #e8f5e9; color: #2e7d32; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; min-width: 220px; text-align: center; }
+        .nav-btn { background: #27ae60; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+        .nav-btn:hover { background: #1e8449; }
+
+        .eguna-card { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
+        .eguna-titulua { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
+        
+        /* Colores por día */
+        .card-mon { border-left-color: #3498db; } .card-mon .eguna-titulua { color: #2980b9; }
+        .card-tue { border-left-color: #e67e22; } .card-tue .eguna-titulua { color: #d35400; }
+        .card-wed { border-left-color: #9b59b6; } .card-wed .eguna-titulua { color: #8e44ad; }
+        .card-thu { border-left-color: #e74c3c; } .card-thu .eguna-titulua { color: #c0392b; }
+        .card-fri { border-left-color: #27ae60; } .card-fri .eguna-titulua { color: #1e8449; }
+
+        .plater-group { display: flex; flex-direction: column; gap: 12px; }
+        .plater-item { display: flex; flex-direction: column; gap: 4px; }
+        label { font-size: 0.75rem; color: #7f8c8d; font-weight: 700; text-transform: capitalize; }
+        .inputs-row { display: flex; gap: 8px; }
+        input, select, textarea { padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; font-size: 0.9rem; }
+        
+        .input-plato { flex: 2; background: #f8f9fa; pointer-events: none; } 
+        .input-amount { flex: 1; font-weight: 600; background: #f1f2f6; pointer-events: none; }
+        .input-text { width: 100%; background: #fff; }
+        textarea { width: 100%; resize: none; background: #f8f9fa; }
+
+        /* Estilos cuando MONITOR o ADMIN están activos */
+        body.monitor-mode .input-amount, 
+        body.monitor-mode .input-text, 
+        body.monitor-mode textarea,
+        body.admin-mode .input-plato,
+        body.admin-mode .input-amount, 
+        body.admin-mode .input-text, 
+        body.admin-mode textarea { 
+            pointer-events: auto !important; 
+            background: white !important; 
+            border: 1px solid #3498db; 
+        }
+
+        .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+
+        .save-btn-day {
+            display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;
+        }
+
+        .language-switcher { text-align: right; margin-bottom: 15px; }
+        .language-switcher button { background: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+        
+        /* AJUSTE BOTÓN VOLVER */
+        .back-btn { 
+            display: none; 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            margin-right: auto; /* Empuja el botón a la izquierda */
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="language-switcher">
+        <button id="lang-btn" onclick="toggleLanguage()">Castellano</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <div style="display: flex;"> <button id="back-btn-dynamic" class="back-btn" onclick="irAtras()">‹ Zerrendara bueltatu</button>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBQDAKLJcfbVRZ5H83qWzeyRaEC0FE1a9Wwg&s" alt="Logo" class="logo">
+            <h2 id="student-name">...</h2>
+            <p class="maila" id="student-level">...</p>
+            
+            <div class="semana-selector">
+                <button class="nav-btn" onclick="cambiarSemana(-1)">‹</button>
+                <div class="semana-info" id="week-range">...</div>
+                <button class="nav-btn" onclick="cambiarSemana(1)">›</button>
+            </div>
+        </header>
+
+        <div id="cards-container"></div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBEC49t-NRGR3NqN0FkqACAV0YRuGeqr-oxMCWsXxftiK1fL-OkTJA_PU0QTppLV0HzQ/exec";
+        let offsetSemanas = 0;
+        let currentMenuData = {};
+        const daysIds = ['mon', 'tue', 'wed', 'thu', 'fri'];
+
+        const container = document.getElementById('cards-container');
+        daysIds.forEach(id => {
+            const card = document.createElement('div');
+            card.className = `eguna-card card-${id}`;
+            card.innerHTML = `
+                <span class="eguna-titulua" id="day-${id}">-</span>
+                <div class="plater-group">
+                    <div class="plater-item">
+                        <label class="lbl-p1">1. Platerra</label>
+                        <div class="inputs-row">
+                            <input type="text" id="${id}-p1" class="input-plato" value="-">
+                            <select id="${id}-p1-am" class="input-amount">
+                                <option value="">-</option>
+                                <option value="Probatu bakarrik">Probatu bakarrik</option>
+                                <option value="Gutxi">Gutxi</option>
+                                <option value="Erdia">Erdia</option>
+                                <option value="Ia osoa">Ia osoa</option>
+                                <option value="Dena">Dena</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="plater-item">
+                        <label class="lbl-p2">2. Platerra</label>
+                        <div class="inputs-row">
+                            <input type="text" id="${id}-p2" class="input-plato" value="-">
+                            <select id="${id}-p2-am" class="input-amount">
+                                <option value="">-</option>
+                                <option value="Probatu bakarrik">Probatu bakarrik</option>
+                                <option value="Gutxi">Gutxi</option>
+                                <option value="Erdia">Erdia</option>
+                                <option value="Ia osoa">Ia osoa</option>
+                                <option value="Dena">Dena</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="plater-item">
+                        <label class="lbl-pos">Postrea</label>
+                        <div class="inputs-row">
+                            <input type="text" id="${id}-pos" class="input-plato" value="-">
+                            <select id="${id}-pos-am" class="input-amount">
+                                <option value="">-</option>
+                                <option value="Probatu bakarrik">Probatu bakarrik</option>
+                                <option value="Gutxi">Gutxi</option>
+                                <option value="Erdia">Erdia</option>
+                                <option value="Ia osoa">Ia osoa</option>
+                                <option value="Dena">Dena</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="extra-row">
+                        <div class="plater-item">
+                            <label class="lbl-pixa">Pixa / Mear</label>
+                            <select id="${id}-pixa" class="input-amount">
+                                <option value="">-</option>
+                                <option value="Bai">Bai</option>
+                                <option value="Ez">Ez</option>
+                            </select>
+                        </div>
+                        <div class="plater-item">
+                            <label class="lbl-loko">Lokoluxka / Dormir</label>
+                            <select id="${id}-loko" class="input-amount">
+                                <option value="">-</option>
+                                <option value="Bai">Bai</option>
+                                <option value="Ez">Ez</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="plater-item">
+                        <label class="lbl-notes">Oharrak / Notas</label>
+                        <textarea id="${id}-notes" rows="2" placeholder="..."></textarea>
+                    </div>
+
+                    <button class="save-btn-day" id="btn-save-${id}" onclick="guardarDia('${id}')">GORDE / GUARDAR</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        window.onload = function() {
+            const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
+            const viewMode = localStorage.getItem('viewMode');
+
+            if (role === 'admin') {
+                document.body.classList.add('admin-mode');
+                document.getElementById('back-btn-dynamic').style.display = 'inline-block';
+                document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
+            } else if (role === 'monitor' || viewMode === 'monitor') {
+                document.body.classList.add('monitor-mode');
+                document.getElementById('back-btn-dynamic').style.display = 'inline-block';
+                document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
+            }
+
+            document.getElementById('student-name').innerText = localStorage.getItem('userName') + " " + (localStorage.getItem('userSurname') || "");
+            document.getElementById('student-level').innerText = localStorage.getItem('userLevel') || "";
+
+            actualizarSemana();
+            cargarMenuDesdeExcel();
+        };
+
+        function irAtras() {
+            const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
+            if (role === 'admin') {
+                window.location.href = 'administratzailea.html';
+            } else {
+                window.location.href = 'monitorea.html';
+            }
+        }
+
+        function actualizarSemana() {
+            const hoy = new Date();
+            hoy.setHours(12, 0, 0, 0);
+            const diaSemana = hoy.getDay();
+            const diffLunes = hoy.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1) + (offsetSemanas * 7);
+            const lunes = new Date(hoy); lunes.setDate(diffLunes);
+            
+            const isEu = document.getElementById('lang-btn').innerText === 'Euskara';
+            const locale = isEu ? 'es-ES' : 'eu-ES';
+            const viernes = new Date(lunes); viernes.setDate(lunes.getDate() + 4);
+            
+            document.getElementById('week-range').innerText = (isEu ? "Semana del " : "Astea: ") + lunes.toLocaleDateString(locale, {day:'numeric', month:'long'}) + " - " + viernes.toLocaleDateString(locale, {day:'numeric', month:'long'});
+
+            const nombresDias = isEu ? ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"] : ["Astelehena", "Asteartea", "Asteazkena", "Osteguna", "Ostirala"];
+
+            daysIds.forEach((id, index) => {
+                const f = new Date(lunes); f.setDate(lunes.getDate() + index);
+                const fechaString = `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`;
+                document.getElementById(`day-${id}`).innerText = `${nombresDias[index]} (${f.getDate()})`;
+                currentMenuData[id] = { date: fechaString };
+            });
+        }
+
+        function cambiarSemana(dir) { offsetSemanas += dir; actualizarSemana(); cargarMenuDesdeExcel(); }
+
+        function cargarMenuDesdeExcel() {
+            const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
+            const studentId = (role === 'monitor' || role === 'admin') ? localStorage.getItem('selectedStudentId') : localStorage.getItem('userId');
+            
+            const callbackName = 'menuCallback';
+            window[callbackName] = function(data) {
+                daysIds.forEach(day => {
+                    document.getElementById(`${day}-p1`).value = "-";
+                    document.getElementById(`${day}-p2`).value = "-";
+                    document.getElementById(`${day}-pos`).value = "-";
+                    document.getElementById(`${day}-p1-am`).value = "";
+                    document.getElementById(`${day}-p2-am`).value = "";
+                    document.getElementById(`${day}-pos-am`).value = "";
+                    document.getElementById(`${day}-pixa`).value = "";
+                    document.getElementById(`${day}-loko`).value = "";
+                    document.getElementById(`${day}-notes`).value = "";
+
+                    if (data && data[day]) {
+                        document.getElementById(`${day}-p1`).value = data[day].p1 || "-";
+                        document.getElementById(`${day}-p2`).value = data[day].p2 || "-";
+                        document.getElementById(`${day}-pos`).value = data[day].pos || "-";
+                        document.getElementById(`${day}-p1-am`).value = data[day].p1_am || "";
+                        document.getElementById(`${day}-p2-am`).value = data[day].p2_am || "";
+                        document.getElementById(`${day}-pos-am`).value = data[day].pos_am || "";
+                        document.getElementById(`${day}-pixa`).value = data[day].pixa_am || "";
+                        document.getElementById(`${day}-loko`).value = data[day].loko_am || "";
+                        document.getElementById(`${day}-notes`).value = data[day].notes || "";
+                    }
+                });
+            };
+
+            const script = document.createElement('script');
+            script.src = `${WEB_APP_URL}?action=getMenu&offset=${offsetSemanas}&studentId=${studentId}&callback=${callbackName}`;
+            document.body.appendChild(script);
+        }
+
+       function guardarDia(dayTag) {
+            const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
+            const studentId = (role === 'monitor' || role === 'admin' || localStorage.getItem('viewMode') === 'monitor') 
+                            ? localStorage.getItem('selectedStudentId') 
+                            : localStorage.getItem('userId');
+            
+            const btn = document.getElementById(`btn-save-${dayTag}`);
+            const fechaISO = currentMenuData[dayTag].date;
+
+            const datos = {
+                action: "saveRecord",
+                role: role,
+                student_id: studentId,
+                date: fechaISO,
+                p1_val: document.getElementById(`${dayTag}-p1`).value,
+                p2_val: document.getElementById(`${dayTag}-p2`).value,
+                pos_val: document.getElementById(`${dayTag}-pos`).value,
+                p1_am: document.getElementById(`${dayTag}-p1-am`).value,
+                p2_am: document.getElementById(`${dayTag}-p2-am`).value,
+                pos_am: document.getElementById(`${dayTag}-pos-am`).value,
+                loko_am: document.getElementById(`${dayTag}-loko`).value, 
+                pixa_am: document.getElementById(`${dayTag}-pixa`).value, 
+                notes: document.getElementById(`${dayTag}-notes`).value
+            };
+
+            btn.innerText = "Gordetzen..."; 
+            btn.disabled = true;
+
+            fetch(WEB_APP_URL, { 
+                method: "POST", 
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos) 
+            })
+            .then(() => {
+                btn.innerText = "Gordeta!"; 
+                btn.style.background = "#2ecc71";
+                setTimeout(() => { 
+                    btn.innerText = "GORDE / GUARDAR"; 
+                    btn.style.background = ""; 
+                    btn.disabled = false; 
+                }, 2000);
+            })
+            .catch(err => {
+                alert("Errorea gordetzean");
+                btn.disabled = false;
+                btn.innerText = "GORDE / GUARDAR";
+            });
+        }
+
+        function logout() { localStorage.clear(); window.location.href = "index.html"; }
+
+        function toggleLanguage() {
+            const btn = document.getElementById('lang-btn');
+            const isEu = btn.innerText === 'Castellano';
+            btn.innerText = isEu ? 'Euskara' : 'Castellano';
+            actualizarSemana();
+        }
+    </script>
+</body>
+</html>

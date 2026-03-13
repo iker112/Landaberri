@@ -5,72 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela Landaberri - Ikasleak</title>
     <style>
-
+        /* --- CONFIGURACIÓN PARA MÓVIL --- */
         @media (max-width: 600px) {
-            .day-card {
-                padding: 15px;
-                margin-bottom: 15px;
-            }
-
-            /* Hace que las etiquetas y los selectores ocupen toda la línea */
-            .meal-row {
-                display: flex;
-                flex-direction: column; /* Apila nombre del plato y selector */
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            
+            /* Ajuste de cabecera en móvil */
+            header { margin-bottom: 15px; }
+            .logo { width: 50px; }
+            h2 { font-size: 1.2rem; }
+            
+            /* Apilamos los selectores sobre los nombres de los platos en móvil */
+            .inputs-row {
+                flex-direction: column;
                 gap: 5px;
-                margin-bottom: 15px;
+            }
+            
+            .input-plato {
+                font-size: 0.85rem;
+                background: #f1f2f6;
             }
 
-            .meal-row input, 
-            .meal-row select {
-                width: 100%;
-                font-size: 16px; /* Evita que iOS haga zoom automático al enfocar */
-                padding: 10px;
+            /* Hacemos los selectores más altos para que sean fáciles de tocar */
+            select, input, textarea {
+                font-size: 16px !important; /* Evita zoom en iOS */
+                padding: 12px !important;
             }
 
-            .notes-area {
-                height: 80px;
+            .semana-info {
+                font-size: 0.8rem;
+                min-width: 180px;
             }
 
-            .save-btn {
-                width: 100%; /* Botón de guardar a lo ancho */
-                padding: 15px;
+            .save-btn-day {
+                padding: 15px !important;
+                font-size: 1rem;
             }
         }
 
+        /* --- ESTILOS GENERALES (MANTENIENDO TUS COLORES) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; }
         .container { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         header { text-align: center; margin-bottom: 20px; position: relative; }
-        .logo { width: 15%; margin-bottom: 10px; }
-        .logout-btn { position: absolute; top: 0; right: 0; background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; }
-        .maila { color: #636e72; font-style: italic; margin-bottom: 10px; }
+        .logo { width: 60px; margin-bottom: 10px; }
         
-        .semana-selector { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .semana-info { background: #e8f5e9; color: #2e7d32; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; min-width: 220px; text-align: center; }
-        .nav-btn { background: #27ae60; color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
-        .nav-btn:hover { background: #1e8449; }
+        .logout-btn { position: absolute; top: 0; right: 0; background: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+        h2 { color: #2d3436; margin-bottom: 5px; text-transform: uppercase; }
+        .maila { color: #636e72; font-style: italic; margin-bottom: 10px; font-size: 0.9rem; }
+        
+        .semana-selector { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .semana-info { background: #e8f5e9; color: #2e7d32; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; min-width: 220px; text-align: center; }
+        .nav-btn { background: #27ae60; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
-        .eguna-card { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
+        .eguna-card { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 25px; border-left: 8px solid #27ae60; }
         .eguna-titulua { font-weight: bold; text-transform: uppercase; font-size: 1.1rem; margin-bottom: 15px; display: block; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 5px; }
         
-        /* Colores por día */
+        /* Colores originales por día */
         .card-mon { border-left-color: #3498db; } .card-mon .eguna-titulua { color: #2980b9; }
         .card-tue { border-left-color: #e67e22; } .card-tue .eguna-titulua { color: #d35400; }
         .card-wed { border-left-color: #9b59b6; } .card-wed .eguna-titulua { color: #8e44ad; }
         .card-thu { border-left-color: #e74c3c; } .card-thu .eguna-titulua { color: #c0392b; }
         .card-fri { border-left-color: #27ae60; } .card-fri .eguna-titulua { color: #1e8449; }
 
-        .plater-group { display: flex; flex-direction: column; gap: 12px; }
-        .plater-item { display: flex; flex-direction: column; gap: 4px; }
+        .plater-group { display: flex; flex-direction: column; gap: 15px; }
+        .plater-item { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 0.75rem; color: #7f8c8d; font-weight: 700; text-transform: capitalize; }
+        
         .inputs-row { display: flex; gap: 8px; }
-        input, select, textarea { padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; font-size: 0.9rem; }
+        input, select, textarea { padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; font-size: 0.95rem; width: 100%; }
         
         .input-plato { flex: 2; background: #f8f9fa; pointer-events: none; } 
-        .input-amount { flex: 1; font-weight: 600; background: #f1f2f6; pointer-events: none; }
-        .input-text { width: 100%; background: #fff; }
-        textarea { width: 100%; resize: none; background: #f8f9fa; }
+        .input-amount { flex: 1; font-weight: 600; background: #fff; cursor: pointer; }
+        textarea { resize: none; }
 
         /* Estilos cuando MONITOR o ADMIN están activos */
         body.monitor-mode .input-amount, 
@@ -85,52 +92,21 @@
             border: 1px solid #3498db; 
         }
 
-        .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .save-btn-day {
-            display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;
+            display: none; width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px;
         }
 
-        .language-switcher {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
+        .language-switcher { position: absolute; top: 20px; right: 20px; z-index: 10; }
+        .language-switcher button { background: white; border: none; color: #000; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
-        .language-switcher button {
-            background: white;
-            border: 1px solid white;
-            color: #000;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .language-switcher button:hover {
-            color: #27ae60;
-            transform: scale(1.05);
-        }
-
-        /* AJUSTE BOTÓN VOLVER */
         .back-btn { 
-            display: none; 
-            background: #3498db; 
-            color: white; 
-            border: none; 
-            padding: 8px 15px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            margin-right: auto; /* Empuja el botón a la izquierda */
-            text-align: left;
+            display: none; background: #3498db; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem;
         }
     </style>
 </head>
-<body>
+<body class="">
 
     <div class="language-switcher">
         <button id="lang-btn" onclick="toggleLanguage()">Castellano</button>
@@ -138,7 +114,8 @@
 
     <div class="container">
         <header>
-            <div style="display: flex;"> <button id="back-btn-dynamic" class="back-btn" onclick="irAtras()">‹ Zerrendara bueltatu</button>
+            <div style="display: flex; justify-content: flex-start;"> 
+                <button id="back-btn-dynamic" class="back-btn" onclick="irAtras()">‹ Bueltatu</button>
             </div>
             <button class="logout-btn" onclick="logout()">Logout</button>
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBQDAKLJcfbVRZ5H83qWzeyRaEC0FE1a9Wwg&s" alt="Logo" class="logo">

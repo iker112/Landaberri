@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jangela - Menua</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; min-height: 100vh; padding: 20px; }
+        
+        header { 
+            text-align: center; 
+            margin-bottom: 10px; 
+            background: white; 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .logo { width: 50px; margin-bottom: 10px; }
+        h2 { color: #2d3436; font-size: 1.2rem; text-transform: uppercase; }
+
+        /* Estilo para el texto de la semana */
+        .semana-info {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; }
+
+        .level-badge {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .day-header {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .day-content { padding: 15px; }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; font-size: 0.75rem; color: #7f8c8d; margin-bottom: 4px; font-weight: bold; }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loading-overlay">Kargatzen... / Cargando...</div>
+
+    <header>
+        <button class="back-btn" onclick="window.history.back()">‹ Atzera</button>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBQDAKLJcfbVRZ5H83qWzeyRaEC0FE1a9Wwg&s" alt="Logo" class="logo">
+        <h2 id="titulo-menu">ASTEKO MENUA</h2>
+        <div class="semana-info" id="rango-semana">...</div>
+    </header>
+
+    <div class="container">
+        <div class="level-badge" id="badge-nivel">
+            🍴 <span id="nombre-nivel">...</span>
+        </div>
+
+        <div id="dias-container"></div>
+
+        <button class="save-btn" id="btn-gorde" onclick="guardarMenu()">
+            💾 GORDE MENUA / GUARDAR MENÚ
+        </button>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3VcJrDqZp8gF_S0cbQkBOf6V940NH1CzoIoQo_zrNhPkbYmGeX21ODvGoxLVXpyiDKg/exec";
+        const nivel = localStorage.getItem('userLevel') || 'HH2';
+        const dias = ['Astelehena', 'Asteartea', 'Asteazkena', 'Osteguna', 'Ostirala'];
+        const diasTags = ['mon', 'tue', 'wed', 'thu', 'fri'];
+
+        window.onload = function() {
+            document.getElementById('nombre-nivel').innerText = nivel;
+            document.getElementById('rango-semana').innerText = obtenerRangoSemana();
+            generarFormulario();
+            cargarDatosMenu();
+        };
+
+        // Función para calcular las fechas del lunes y viernes de la semana actual
+        function obtenerRangoSemana() {
+            const hoy = new Date();
+            const diaSemana = hoy.getDay(); // 0: Dom, 1: Lun...
+            const diffLunes = hoy.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1);
+            
+            const lunes = new Date(hoy.setDate(diffLunes));
+            const viernes = new Date(lunes);
+            viernes.setDate(lunes.getDate() + 4);
+
+            const opciones = { day: '2-digit', month: '2-digit' };
+            const lunesStr = lunes.toLocaleDateString('es-ES', opciones);
+            const viernesStr = viernes.toLocaleDateString('es-ES', opciones);
+
+            return `Astea / Semana: ${lunesStr} - ${viernesStr}`;
+        }
+
+        function generarFormulario() {
+            const container = document.getElementById('dias-container');
+            dias.forEach((dia, index) => {
+                const tag = diasTags[index];
+                container.innerHTML += `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <span>${dia.toUpperCase()}</span>
+                            <span style="font-size: 0.8rem; opacity: 0.6;">${nivel}</span>
+                        </div>
+                        <div class="day-content">
+                            <div class="input-group">
+                                <label>1. PLATERA / 1º PLATO</label>
+                                <input type="text" id="${tag}-p1" placeholder="Adem: Dilistak...">
+                            </div>
+                            <div class="input-group">
+                                <label>2. PLATERA / 2º PLATO</label>
+                                <input type="text" id="${tag}-p2" placeholder="Adem: Legatza...">
+                            </div>
+                            <div class="input-group">
+                                <label>POSTREA / POSTRE</label>
+                                <input type="text" id="${tag}-p3" placeholder="Adem: Fruta...">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function cargarDatosMenu() {
+            document.getElementById('loading').style.display = 'flex';
+            const menuId = "MENU_" + nivel.toUpperCase();
+            
+            const callbackName = 'menuCallback';
+            window[callbackName] = function(response) {
+                if (response.student) {
+                    const s = response.student;
+                    diasTags.forEach(tag => {
+                        document.getElementById(`${tag}-p1`).value = s[`p1_${tag}`] || "";
+                        document.getElementById(`${tag}-p2`).value = s[`p2_${tag}`] || "";
+                        document.getElementById(`${tag}-p3`).value = s[`p3_${tag}`] || "";
+                    });
+                }
+                document.getElementById('loading').style.display = 'none';
+                document.body.removeChild(script);
+                delete window[callbackName];
+            };
+
+            const script = document.createElement('script');
+            script.src = `${WEB_APP_URL}?action=getStudentDetails&studentId=${menuId}&callback=${callbackName}`;
+            document.body.appendChild(script);
+        }
+
+       // Sustituye tu función guardarMenu en menu.html por esta:
+        function guardarMenu() {
+            const btn = document.getElementById('btn-gorde');
+            btn.innerText = "Gordetzen... / Guardando...";
+            btn.disabled = true;
+
+            // Calculamos las fechas de la semana para enviarlas al servidor
+            const hoy = new Date();
+            const diaSemana = hoy.getDay();
+            const diffLunes = hoy.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1);
+            const lunes = new Date(hoy.setDate(diffLunes));
+
+            const datos = {
+                action: "updateMenuGeneral", // Nueva acción en Apps Script
+                level: nivel,
+                fechas: []
+            };
+
+            // Preparamos los platos por día y su fecha correspondiente
+            diasTags.forEach((tag, index) => {
+                const fechaDia = new Date(lunes);
+                fechaDia.setDate(lunes.getDate() + index);
+                const fechaStr = fechaDia.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
+                datos.fechas.push({
+                    fecha: fechaStr,
+                    p1: document.getElementById(`${tag}-p1`).value,
+                    p2: document.getElementById(`${tag}-p2`).value,
+                    pos: document.getElementById(`${tag}-p3`).value
+                });
+            });
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(datos)
+            }).then(() => {
+                btn.innerText = "✅ GORDETA / GUARDADO";
+                btn.style.background = "#27ae60";
+                setTimeout(() => {
+                    btn.innerText = "💾 GORDE MENUA / GUARDAR MENÚ";
+                    btn.style.background = "#2ecc71";
+                    btn.disabled = false;
+                }, 2000);
+            }).catch(err => {
+                alert("Errorea gordetzean");
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

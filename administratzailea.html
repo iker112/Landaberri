@@ -2,9 +2,42 @@
 <html lang="eu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela - Administratzailea</title>
     <style>
+
+        @media (max-width: 600px) {
+            header { padding: 15px; margin-bottom: 15px; }
+            .logo { width: 30%; } /* Logo más visible */
+            
+            .logout-btn { 
+                position: static; /* En móvil lo bajamos o centramos */
+                display: block;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            /* Las tarjetas de los alumnos */
+            .ikasle-card {
+                padding: 15px;
+                margin-bottom: 8px;
+                flex-direction: row; /* Mantenemos nombre y botón en línea */
+                justify-content: space-between;
+                font-size: 1rem;
+            }
+
+            .delete-btn {
+                padding: 10px 15px; /* Botón de borrar más grande para no fallar */
+            }
+
+            /* El botón flotante de "Gehitu" (si lo tienes) o el de navegación */
+            .nav-add-btn {
+                width: 100%;
+                text-align: center;
+                padding: 15px;
+            }
+        }
+
         /* ... (Tus estilos anteriores se mantienen) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #f0f2f5; min-height: 100vh; padding: 20px; }

@@ -2,9 +2,41 @@
 <html lang="eu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela Landaberri - Ikasleak</title>
     <style>
+
+        @media (max-width: 600px) {
+            .day-card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            /* Hace que las etiquetas y los selectores ocupen toda la línea */
+            .meal-row {
+                display: flex;
+                flex-direction: column; /* Apila nombre del plato y selector */
+                gap: 5px;
+                margin-bottom: 15px;
+            }
+
+            .meal-row input, 
+            .meal-row select {
+                width: 100%;
+                font-size: 16px; /* Evita que iOS haga zoom automático al enfocar */
+                padding: 10px;
+            }
+
+            .notes-area {
+                height: 80px;
+            }
+
+            .save-btn {
+                width: 100%; /* Botón de guardar a lo ancho */
+                padding: 15px;
+            }
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); min-height: 100vh; padding: 20px; }
         .container { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }

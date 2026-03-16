@@ -1,0 +1,16 @@
+{
+  "short_name": "Jangela",
+  "name": "Jangela Landaberri",
+  "icons": [
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBQDAKLJcfbVRZ5H83qWzeyRaEC0FE1a9Wwg&s",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#3498db",
+  "theme_color": "#3498db"
+}

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jangela Monitora</title>
     <style>
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #f0f2f5; min-height: 100vh; padding: 20px; }
         
@@ -76,44 +75,19 @@
             padding: 15px;
             border-radius: 8px;
             text-align: center;
-            transition: transform 0.2s;
             cursor: pointer;
+            transition: transform 0.2s;
         }
-        .ikasle-card:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .ikasle-name { font-weight: 600; color: #2d3436; margin-bottom: 5px; }
-        .ikasle-status { font-size: 0.8rem; color: #3498db; font-weight: bold; }
 
-                        /* --- ESTO SOLO SE ACTIVA EN MÓVIL --- */
+        .ikasle-card:active { transform: scale(0.95); }
+
+        .ikasle-name { font-weight: bold; color: #2d3436; margin-bottom: 5px; }
+        .ikasle-status { font-size: 0.7rem; color: #7f8c8d; }
+
         @media (max-width: 600px) {
-            /* Ajuste de cabecera: el botón logout ya no pisa el logo */
-            header {
-                padding: 40px 15px 15px 15px !important;
-            }
-            
-            .logout-btn {
-                top: 10px !important;
-                right: 10px !important;
-                padding: 5px 10px !important;
-            }
-
-            .logo {
-                width: 60px !important; /* Tamaño fijo para que no baile */
-            }
-
-            /* Tarjetas más grandes para el dedo */
-            .ikasle-card {
-                padding: 15px !important;
-                margin-bottom: 10px !important;
-            }
-
-            /* Botón de borrar más grande */
-            .delete-btn {
-                width: 45px !important;
-                height: 45px !important;
-            }
+            header { padding: 40px 15px 15px 15px !important; }
+            .logout-btn { top: 10px !important; right: 10px !important; }
+            .logo { width: 60px !important; }
         }
     </style>
 </head>
@@ -126,20 +100,59 @@
     </header>
 
     <div class="container" id="main-container">
-        <div class="maila-section" id="hh2"><div class="maila-header" onclick="toggleLevel('hh2')"><span>HH2 URTE</span><span class="count" id="count-hh2">0</span></div><div class="gela-content" id="content-hh2"></div></div>
-        <div class="maila-section" id="hh3"><div class="maila-header" onclick="toggleLevel('hh3')"><span>HH3 URTE</span><span class="count" id="count-hh3">0</span></div><div class="gela-content" id="content-hh3"></div></div>
-        <div class="maila-section" id="hh4"><div class="maila-header" onclick="toggleLevel('hh4')"><span>HH4 URTE</span><span class="count" id="count-hh4">0</span></div><div class="gela-content" id="content-hh4"></div></div>
-        <div class="maila-section" id="hh5"><div class="maila-header" onclick="toggleLevel('hh5')"><span>HH5 URTE</span><span class="count" id="count-hh5">0</span></div><div class="gela-content" id="content-hh5"></div></div>
-        <div class="maila-section" id="lh1"><div class="maila-header" onclick="toggleLevel('lh1')"><span>LH1</span><span class="count" id="count-lh1">0</span></div><div class="gela-content" id="content-lh1"></div></div>
-        <div class="maila-section" id="lh2"><div class="maila-header" onclick="toggleLevel('lh2')"><span>LH2</span><span class="count" id="count-lh2">0</span></div><div class="gela-content" id="content-lh2"></div></div>
+        <div class="maila-section" id="hh2">
+            <div class="maila-header" onclick="toggleLevel('hh2')">
+                <span>HH2 URTE</span>
+                <span class="count" id="count-hh2">0</span>
+            </div>
+            <div class="gela-content" id="content-hh2"></div>
+        </div>
+
+        <div class="maila-section" id="hh3">
+            <div class="maila-header" onclick="toggleLevel('hh3')">
+                <span>HH3 URTE</span>
+                <span class="count" id="count-hh3">0</span>
+            </div>
+            <div class="gela-content" id="content-hh3"></div>
+        </div>
+
+        <div class="maila-section" id="hh4">
+            <div class="maila-header" onclick="toggleLevel('hh4')">
+                <span>HH4 URTE</span>
+                <span class="count" id="count-hh4">0</span>
+            </div>
+            <div class="gela-content" id="content-hh4"></div>
+        </div>
+
+        <div class="maila-section" id="hh5">
+            <div class="maila-header" onclick="toggleLevel('hh5')">
+                <span>HH5 URTE</span>
+                <span class="count" id="count-hh5">0</span>     
+            </div>
+            <div class="gela-content" id="content-hh5"></div>
+        </div>
+
+        <div class="maila-section" id="lh1">
+            <div class="maila-header" onclick="toggleLevel('lh1')">
+                <span>LH1</span>
+                <span class="count" id="count-lh1">0</span>
+            </div>
+            <div class="gela-content" id="content-lh1"></div>
+        </div>
+
+        <div class="maila-section" id="lh2">
+            <div class="maila-header" onclick="toggleLevel('lh2')">
+                <span>LH2</span>
+                <span class="count" id="count-lh2">0</span>
+            </div>
+            <div class="gela-content" id="content-lh2"></div>
+        </div>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBEC49t-NRGR3NqN0FkqACAV0YRuGeqr-oxMCWsXxftiK1fL-OkTJA_PU0QTppLV0HzQ/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3VcJrDqZp8gF_S0cbQkBOf6V940NH1CzoIoQo_zrNhPkbYmGeX21ODvGoxLVXpyiDKg/exec";
 
-        window.onload = function() {
-            obtenerIkasleak();
-        };
+        window.onload = function() { obtenerIkasleak(); };
 
         function toggleLevel(id) {
             const content = document.getElementById('content-' + id);
@@ -161,7 +174,6 @@
         function renderizarIkasleak(students) {
             const niveles = ['hh2', 'hh3', 'hh4', 'hh5', 'lh1', 'lh2'];
             const counts = { hh2: 0, hh3: 0, hh4: 0, hh5: 0, lh1: 0, lh2: 0 };
-
             niveles.forEach(n => document.getElementById('content-' + n).innerHTML = '');
 
             students.forEach(student => {
@@ -179,12 +191,11 @@
                     container.appendChild(card);
                 }
             });
-
             niveles.forEach(n => document.getElementById('count-' + n).innerText = counts[n]);
         }
 
         function verDetalleAlumno(student) {
-            localStorage.setItem('selectedStudentId', student.student_id); // <--- AÑADIR ESTO
+            localStorage.setItem('selectedStudentId', student.student_id);
             localStorage.setItem('userName', student.student_name);
             localStorage.setItem('userSurname', student.student_surname);
             localStorage.setItem('userLevel', student.class_level);

@@ -95,7 +95,7 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzBEC49t-NRGR3NqN0FkqACAV0YRuGeqr-oxMCWsXxftiK1fL-OkTJA_PU0QTppLV0HzQ/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3VcJrDqZp8gF_S0cbQkBOf6V940NH1CzoIoQo_zrNhPkbYmGeX21ODvGoxLVXpyiDKg/exec";
         let offsetSemanas = 0;
         let currentMenuData = {};
         const daysIds = ['mon', 'tue', 'wed', 'thu', 'fri'];
@@ -181,46 +181,46 @@
         });
 
        window.onload = function() {
-            // 1. LIMPIEZA INICIAL: Quitamos las clases de edición al body por seguridad
-            document.body.classList.remove('admin-mode', 'monitor-mode');
+        // 1. LIMPIEZA INICIAL: Quitamos las clases de edición al body por seguridad
+        document.body.classList.remove('admin-mode', 'monitor-mode');
+        
+        const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
+        
+        // 2. COMPROBACIÓN DE PERMISOS
+        if (role === 'admin') {
+            document.body.classList.add('admin-mode');
+            document.getElementById('back-btn-dynamic').style.display = 'inline-block';
+            document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
+        } 
+        else if (role === 'monitor') {
+            document.body.classList.add('monitor-mode');
+            document.getElementById('back-btn-dynamic').style.display = 'inline-block';
+            document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
+        } 
+        else {
+            // --- CASO ALUMNO (USER) ---
+            // Ocultamos botones de volver y guardar
+            document.getElementById('back-btn-dynamic').style.display = 'none';
+            document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'none');
             
-            const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
-            
-            // 2. COMPROBACIÓN DE PERMISOS
-            if (role === 'admin') {
-                document.body.classList.add('admin-mode');
-                document.getElementById('back-btn-dynamic').style.display = 'inline-block';
-                document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
-            } 
-            else if (role === 'monitor') {
-                document.body.classList.add('monitor-mode');
-                document.getElementById('back-btn-dynamic').style.display = 'inline-block';
-                document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'block');
-            } 
-            else {
-                // --- CASO ALUMNO (USER) ---
-                // Ocultamos botones de volver y guardar
-                document.getElementById('back-btn-dynamic').style.display = 'none';
-                document.querySelectorAll('.save-btn-day').forEach(btn => btn.style.display = 'none');
-                
-                // IMPORTANTE: Bloqueamos los selectores y el texto para que no pueda cambiar nada
-                // Esto evita que el alumno pueda desplegar las opciones de comida
-                document.querySelectorAll('select, textarea').forEach(el => {
-                    el.disabled = true; // Bloqueo real de formulario
-                    el.style.background = '#f1f2f6'; // Color grisáceo para indicar que está bloqueado
-                });
+            // IMPORTANTE: Bloqueamos los selectores y el texto para que no pueda cambiar nada
+            // Esto evita que el alumno pueda desplegar las opciones de comida
+            document.querySelectorAll('select, textarea').forEach(el => {
+                el.disabled = true; // Bloqueo real de formulario
+                el.style.background = '#f1f2f6'; // Color grisáceo para indicar que está bloqueado
+            });
 
-                // Limpiamos rastro de modo monitor
-                localStorage.removeItem('viewMode');
-            }
+            // Limpiamos rastro de modo monitor
+            localStorage.removeItem('viewMode');
+        }
 
-            // Rellenar datos
-            document.getElementById('student-name').innerText = (localStorage.getItem('userName') || "") + " " + (localStorage.getItem('userSurname') || "");
-            document.getElementById('student-level').innerText = localStorage.getItem('userLevel') || "";
+        // Rellenar datos
+        document.getElementById('student-name').innerText = (localStorage.getItem('userName') || "") + " " + (localStorage.getItem('userSurname') || "");
+        document.getElementById('student-level').innerText = localStorage.getItem('userLevel') || "";
 
-            actualizarSemana();
-            cargarMenuDesdeExcel();
-        };
+        actualizarSemana();
+        cargarMenuDesdeExcel();
+    };
 
         function irAtras() {
             const role = localStorage.getItem('userRole') ? localStorage.getItem('userRole').toLowerCase().trim() : '';
